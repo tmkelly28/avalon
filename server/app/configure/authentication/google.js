@@ -23,7 +23,10 @@ module.exports = function (app) {
                 if (user) {
                     return user;
                 } else {
+                    let email = profile.emails[0].value;
                     return UserModel.create({
+                        email: email,
+                        picture: profile._json.picture,
                         google: {
                             id: profile.id
                         }

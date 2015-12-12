@@ -1,7 +1,21 @@
 <section id="home">
     <h1>A v a l o n</h1>
     <oauth-button provider-name="google"></oauth-button>
-    <a ui-sref="lobby" class="btn btn-social">
-    	<span>Continue as Guest</span>
-    </a>
+
+    <div class="col-md-12" ng-if="showDisplayNameEntry">
+    	<form name="displayNameEntry" class="form-group">
+    		<input name="displayNameInput" 
+			       type="text"
+			       placeholder="{{defaultDisplayName}}"
+			       ng-model="user.displayName"
+			       class="form-control" />
+		<button type="submit" 
+		        class="btn btn-default" 
+		        ng-click="proceed()"
+		        required>
+			Use This Display Name
+		</button>
+    	</form>
+    </div>
+
 </section>

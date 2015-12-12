@@ -1,7 +1,9 @@
+'use strict';
+
 app.service('AuthService', function ($http, Session, $rootScope, AUTH_EVENTS, $q) {
 
     function onSuccessfulLogin(response) {
-        var data = response.data;
+        let data = response.data;
         Session.create(data.id, data.user);
         $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
         return data.user;

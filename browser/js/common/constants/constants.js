@@ -1,3 +1,4 @@
+'use strict';
 // AUTH_EVENTS is used throughout our app to
 // broadcast and listen from and to the $rootScope
 // for important events about authentication flow.

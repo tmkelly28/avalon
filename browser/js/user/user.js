@@ -1,3 +1,5 @@
+'use strict';
+
 app.config(function ($stateProvider) {
 	$stateProvider.state('user', {
 		url: '/user',
@@ -5,4 +7,4 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('user', function ($scope, $state) {});
+app.controller('user', function () {});

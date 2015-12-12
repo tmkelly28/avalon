@@ -1,6 +1,8 @@
+'use strict';
+
 app.service('Session', function ($rootScope, AUTH_EVENTS) {
 
-    var self = this;
+    let self = this;
 
     $rootScope.$on(AUTH_EVENTS.notAuthenticated, function () {
         self.destroy();

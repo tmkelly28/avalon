@@ -1,4 +1,5 @@
 'use strict';
+
 window.app = angular.module('Avalon', ['ui.router', 'ui.bootstrap', 'ngAnimate']);
 
 app.config(function ($urlRouterProvider, $locationProvider) {
@@ -12,7 +13,7 @@ app.config(function ($urlRouterProvider, $locationProvider) {
 app.run(function ($rootScope, AuthService, $state) {
 
     // The given state requires an authenticated user.
-    var destinationStateRequiresAuth = function (state) {
+    function destinationStateRequiresAuth (state) {
         return state.data && state.data.authenticate;
     };
 
@@ -48,7 +49,7 @@ app.run(function ($rootScope, AuthService, $state) {
 
     });
 
-    var socket = io(window.location.origin);
+    const socket = io(window.location.origin);
 
     socket.on('connect', function () {
         console.log('I have made a persistent two-way connection to the server!');

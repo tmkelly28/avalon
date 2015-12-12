@@ -13,7 +13,7 @@ router.post('/', function create (req, res, next) {
 	.then(null, next);
 });
 
-router.params('id', function setUser (req, res, next, id) {
+router.param('id', function setUser (req, res, next, id) {
 	User.findById(id).exec()
 	.then(user => {
 		req.targetUser = user;

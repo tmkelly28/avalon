@@ -7,6 +7,10 @@ app.config(function ($urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     // If we go to a URL that ui-router doesn't have registered, go to the "/" url.
     $urlRouterProvider.otherwise('/');
+
+    $urlRouterProvider.when('/auth/:provider', function () {
+        window.location.reload();
+    });
 });
 
 // This app.run is for controlling access to specific states.
@@ -37,22 +41,14 @@ app.run(function ($rootScope, AuthService, $state) {
         event.preventDefault();
 
         AuthService.getLoggedInUser().then(function (user) {
+
             // If a user is retrieved, then renavigate to the destination
             // (the second time, AuthService.isAuthenticated() will work)
             // otherwise, if no user is logged in, go to "login" state.
-            if (user) {
-                $state.go(toState.name, toParams);
-            } else {
-                $state.go('login');
-            }
+            if (user) $state.go(toState.name, toParams);
+            else $state.go('home');
         });
 
-    });
-
-    const socket = io(window.location.origin);
-
-    socket.on('connect', function () {
-        console.log('I have made a persistent two-way connection to the server!');
     });
 
 });

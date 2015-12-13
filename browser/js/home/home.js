@@ -3,11 +3,12 @@
 app.config(function ($stateProvider) {
     $stateProvider.state('home', {
         url: '/',
-        templateUrl: 'js/home/home.html'
+        templateUrl: 'js/home/home.html',
+        controller: 'HomeCtrl'
     });
 });
 
-app.controller('home', function ($scope, $rootScope, $state, AUTH_EVENTS, Session, UserService) {
+app.controller('HomeCtrl', function ($scope, $rootScope, $state, Session, AUTH_EVENTS, UserService, AuthService) {
 
 	function proceedToLobby (user) {
 		$state.go('lobby', {
@@ -15,12 +16,17 @@ app.controller('home', function ($scope, $rootScope, $state, AUTH_EVENTS, Sessio
 		});
 	}
 
-	$rootScope.$on(AUTH_EVENTS.loginSuccess, function () {
-		$scope.showDisplayNameEntry = true;
-		$scope.user = Session.user;
-		$scope.originalDisplayName = $scope.user.displayName;
-		$scope.defaultDisplayName = $scope.user.displayName || "Enter a display name"
-	});
+	function setUser () {
+        AuthService.getLoggedInUser()
+        .then(user => {
+        	if (user) {
+				$scope.showDisplayNameEntry = true;
+            	$scope.user = user;
+				$scope.originalDisplayName = $scope.user.displayName;
+				$scope.defaultDisplayName = $scope.user.displayName || 'Enter a display name';
+        	}
+        });
+    };
 
 	$scope.proceed = function () {
 		if ($scope.user.displayName !== $scope.originalDisplayName) {
@@ -28,5 +34,7 @@ app.controller('home', function ($scope, $rootScope, $state, AUTH_EVENTS, Sessio
 			.then(user => proceedToLobby(user));
 		} else proceedToLobby($scope.user);
 	};
+
+	setUser();
 
 });

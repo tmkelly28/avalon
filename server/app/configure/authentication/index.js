@@ -1,7 +1,6 @@
 'use strict';
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-const _ = require('lodash');
 const passport = require('passport');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -47,7 +46,7 @@ module.exports = function (app) {
     // logged in already.
     app.get('/session', function (req, res) {
         if (req.user) {
-            res.send({ user: _.omit(req.user.toJSON(), ['salt', 'password']) });
+            res.send({ user: req.user.toJSON() });
         } else {
             res.status(401).send('No authenticated user.');
         }

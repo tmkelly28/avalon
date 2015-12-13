@@ -4,6 +4,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const mongoose = require('mongoose');
 const UserModel = mongoose.model('User');
+const StatisticsModel = mongoose.model('Statistics');
 
 module.exports = function (app) {
 
@@ -19,6 +20,7 @@ module.exports = function (app) {
 
         UserModel.findOne({ 'google.id': profile.id }).exec()
             .then(function (user) {
+                let _user;
 
                 if (user) {
                     return user;
@@ -30,7 +32,12 @@ module.exports = function (app) {
                         google: {
                             id: profile.id
                         }
-                    });
+                    })
+                    .then(newUser => {
+                        _user = newUser;
+                        return StatisticsModel.create({ owner: newUser._id })
+                    })
+                    .then(() => _user);
                 }
 
             }).then(function (userToLogin) {

@@ -1,6 +1,7 @@
 <section id="user">
 	<h1>U s e r</h1>
-	<p>Your Username</p>
+	<p>{{ user.displayName }}</p>
+	<img ng-src="{{user.picture}}" />
 	<table class="table table-hover">
     	<thead>
     		<tr>
@@ -11,48 +12,48 @@
 		<tbody>
 			<tr>
 				<th scope="row">Wins</th>
-				<td>4</td>
+				<td>{{ statistics.wins }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Losses</th>
-				<td>4</td>
+				<td>{{ statistics.losses }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Loyal Servant</th>
-				<td>4</td>
+				<td>{{ statistics.loyal }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Minion of Mordred</th>
-				<td>4</td>
+				<td>{{ statistics.minion }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Merlin</th>
-				<td>4</td>
+				<td>{{ statistics.merlin }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Percival</th>
-				<td>4</td>
+				<td>{{ statistics.percival }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Mordred</th>
-				<td>4</td>
+				<td>{{ statistics.mordred }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Morgana</th>
-				<td>4</td>
+				<td>{{ statistics.morgana }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Oberon</th>
-				<td>4</td>
+				<td>{{ statistics.oberon }}</td>
 			</tr>
 
 			<tr>
 				<th scope="row">Assassin</th>
-				<td>4</td>
+				<td>{{ statistics.assassin }}</td>
 			</tr>
 			<tr>
 				<th scope="row">Correctly Guessed Merlin</th>
-				<td>4</td>
+				<td>{{ statistics.guessedMerlin }}</td>
 			</tr>
 		</tbody>
     </table>

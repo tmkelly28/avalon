@@ -26,7 +26,6 @@ app.service('UserService', function ($http) {
 		return $http.get('/api/users/' + id +'/statistics')
 		.then(toData)
 		.then(null, errorHandler)
-
 	}
 	
 });

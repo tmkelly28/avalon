@@ -2,7 +2,7 @@
     <h1>L o b b y</h1>
     <h3>{{ user.displayName }}</h3>
     <img ng-src="{{user.picture}}" />
-    <a href="#" class="btn btn-default">Create New Room</a>
+    <a href="#" class="btn btn-default" ng-click="openModal()">Create New Room</a>
     <a ui-sref="user({uid:user._id})" class="btn btn-default">Your User Stats</a>
     <table class="table table-hover">
     	<thead>
@@ -16,13 +16,13 @@
     		</tr>
     	</thead>
 		<tbody>
-            <tr>
+            <tr ng-repeat='game in games'>
     			<th scope="row">1</th>
-    			<td><a ui-sref="room">Test</a></td>
-    			<td> Omri </td>
-    			<td> 5 </td>
-    			<td> 10 </td>
-    			<td> Percival, Morgana, Oberon </td>
+    			<td><a ui-sref="room">{{ game.name }}</a></td>
+    			<td> {{ game.host }} </td>
+    			<td> {{ game.size }} </td>
+    			<td> {{ game.maxSize }} </td>
+    			<td> {{ specialRules(game) }} </td>
             </tr>
 		</tbody>
     </table>

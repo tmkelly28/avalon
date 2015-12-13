@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
 		required: true
 	},
 	active: {
-		type: Boolean
+		type: Boolean,
+		index: true
 	},
 	maxSize: {
 		type: Number
@@ -24,6 +25,9 @@ const schema = new mongoose.Schema({
 		type: Boolean
 	},
 	useOberon: {
+		type: Boolean
+	},
+	useLady: {
 		type: Boolean
 	}
 });

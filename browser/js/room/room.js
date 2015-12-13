@@ -2,10 +2,10 @@
 
 app.config(function ($stateProvider) {
 	$stateProvider.state('room', {
-		url: '/room',
+		url: '/room/:id',
 		templateUrl: 'js/room/room.html',
-		controller: 'room'
+		controller: 'RoomCtrl'
 	});
 });
 
-app.controller('rooom', function () {});
+app.controller('RoomCtrl', function () {});

@@ -5,6 +5,9 @@ app.config(function ($stateProvider) {
 		url: '/user/:uid',
 		templateUrl: 'js/user/user.html',
 		controller: 'UserCtrl',
+		data: {
+			authenticate: true
+		},
 		resolve: {
 			user: function ($stateParams, UserService) {
 				return UserService.fetchById($stateParams.uid);

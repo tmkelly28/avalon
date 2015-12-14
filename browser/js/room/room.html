@@ -1,14 +1,19 @@
 <section id="room">
 	<h1>G a m e</h1>
-	<p>Room #</p>
-	<div class="well" id="chat"></div>
+	<p>{{ game.name }}</p>
+	<div class="well" id="chat">
+		<p ng-repeat="chat in chats">{{ chat.text }}</p>
+	</div>
 	<form>
 		<div class="form-group">
 			<input name="chatInput" 
 			       type="text"
+			       ng-model="newMessage.text"
 			       placeholder="Enter your message"
 			       class="form-control" />
 		</div>
-		<button type="submit" class="btn btn-default">Enter</button>
+		<button type="submit" 
+		        class="btn btn-default" 
+		        ng-click="addMessage()">Enter</button>
 	</form>
 </section>

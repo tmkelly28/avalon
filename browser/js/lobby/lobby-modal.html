@@ -1,0 +1,36 @@
+<div class='modal-header' id='lobbyModal'>
+	<div class='modal-body'>
+		<div class="form-group">
+			<form name='newGameModal'>
+				<div>
+					<input name='roomName'
+						   type='text'
+						   ng-model='newGame.name'
+						   placeholder='Enter a room name'
+					       class='form-control'/>
+				</div>
+				<label>Select Number of Players:</label>
+				<div class="btn-group">
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="5">5</label>
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="6">6</label>
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="7">7</label>
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="8">8</label>
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="9">9</label>
+			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="10">10</label>
+			    </div>
+			    <div>
+				    <label>Special Rules:</label>
+				    <div class="btn-group">
+				    	<label class="btn btn-primary" ng-model="newGame.lady" uib-btn-checkbox>Lady of the Lake</label>
+					    <label class="btn btn-primary" ng-model="newGame.percival" uib-btn-checkbox>Percival</label>
+					    <label class="btn btn-primary" ng-model="newGame.morgana" uib-btn-checkbox>Morgana</label>
+					    <label class="btn btn-primary" ng-model="newGame.oberon" uib-btn-checkbox>Oberon</label>
+				    </div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class='btn btn-default' ng-click="createNewGame()">Create Room</button>
+        </div>
+	</div>
+</div>

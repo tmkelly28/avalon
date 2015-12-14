@@ -20,7 +20,6 @@ app.config(function ($stateProvider) {
 app.controller('RoomCtrl', function ($scope, $firebaseArray, game, FbChatService, Session) {
 
 	const author = Session.user.displayName;
-	console.log(author)
 
 	$scope.game = game;
 	$scope.fbChat = FbChatService.getFbChatRef(game._id)

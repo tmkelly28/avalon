@@ -7,7 +7,6 @@
     <table class="table table-hover">
     	<thead>
     		<tr>
-    			<th>#</th>
     			<th>Room Name</th>
     			<th>Host</th>
     			<th># Players</th>
@@ -17,9 +16,8 @@
     	</thead>
 		<tbody>
             <tr ng-repeat='game in games'>
-    			<th scope="row">1</th>
-    			<td><a ui-sref="room">{{ game.name }}</a></td>
-    			<td> {{ game.host }} </td>
+    			<th scope="row"><a ui-sref="room({ id: game._id })">{{ game.name }}</a></th>
+    			<td> {{ game.host.displayName }} </td>
     			<td> {{ game.size }} </td>
     			<td> {{ game.maxSize }} </td>
     			<td> {{ specialRules(game) }} </td>

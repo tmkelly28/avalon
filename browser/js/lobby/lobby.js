@@ -12,17 +12,18 @@ app.config(function ($stateProvider) {
 		resolve: {
 			user: function ($stateParams, UserService) {
 				return UserService.fetchById($stateParams.uid);
-			},
-			games: function (GameService) {
-				return GameService.fetchAllActive();
 			}
 		}
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, user, $uibModal, GameService, UserService) {
+app.controller('LobbyCtrl', function ($scope, user, $uibModal, GameService, UserService, FbLobbyService, $firebaseArray) {
 
 	$scope.user = user;
+	$scope.fb = FbLobbyService.getFbGamesRef()
+	.then(fb => {
+		$scope.games = $firebaseArray(fb);
+	});
 
 	$scope.openModal = function () {
 		$uibModal.open({
@@ -64,6 +65,7 @@ app.controller('LobbyModalCtrl', function ($scope, $state, $uibModalInstance, us
 			useLady: $scope.newGame.lady
 		})
 		.then(game => {
+			console.log(game)
 			$state.go('room', {id: game._id});
 			$uibModalInstance.dismiss();
 		});

@@ -2,7 +2,7 @@
 	<h1>G a m e</h1>
 	<p>{{ game.name }}</p>
 	<div class="well" id="chat">
-		<p ng-repeat="chat in chats">{{ chat.text }}</p>
+		<p ng-repeat="chat in chats | orderBy:'-'">{{ chat.text }}</p>
 	</div>
 	<form>
 		<div class="form-group">

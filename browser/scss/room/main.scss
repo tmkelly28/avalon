@@ -3,4 +3,9 @@
 		margin-top: 40px;
 		text-align: center;
 	}
+
+	.well {
+		max-height: 200px;
+		overflow: scroll;
+	}
 }

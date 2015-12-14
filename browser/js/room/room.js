@@ -23,7 +23,7 @@ app.controller('RoomCtrl', function ($scope, $firebaseArray, game, FbChatService
 	console.log(author)
 
 	$scope.game = game;
-	$scope.fbChat = FbChatService.getFbChatRef()
+	$scope.fbChat = FbChatService.getFbChatRef(game._id)
 	.then(chatRef => {
 		$scope.chats = $firebaseArray(chatRef)
 	});

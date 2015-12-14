@@ -22,7 +22,7 @@ app.service('GameService', function ($http, FbGamesService, Session) {
 		.then(null, errorHandler);	
 	}
 
-	this.create = function (data) {
+	this.create = function (data, games) {
 		return $http.post('/api/games/', data)
 		.then(toData)
 		.then(game => {

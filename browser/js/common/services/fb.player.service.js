@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('FbPlayerService', function ($firebaseArray, Session, FbGamesService) {
+app.service('FbPlayerService', function ($firebaseArray) {
 
 	function errorHandler (error) {
 		console.error(error);
@@ -17,7 +17,7 @@ app.service('FbPlayerService', function ($firebaseArray, Session, FbGamesService
 	}
 
 	this.addPlayer = function (players, player) {
-		return new Promise(function (resolve, reject) {
+		return new Promise(function (resolve) {
 			resolve(players.$add(player));
 		})
 		.then(null, errorHandler);

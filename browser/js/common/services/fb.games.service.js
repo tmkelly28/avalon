@@ -16,13 +16,9 @@ app.service('FbGamesService', function ($firebaseArray) {
 	}
 
 	this.pushNewGame = function (game) {
-		let _game = game;
-		return startFbPromise
-		.then(gamesRef => {
-			return gamesRef.push().set(game);
-		})
-		.then(() => _game)
-		.then(null, errorHandler);
+		let games = new Firebase("https://resplendent-torch-2655.firebaseio.com/games");
+		games.push().set(game);
+		return game;
 	}
 
 });

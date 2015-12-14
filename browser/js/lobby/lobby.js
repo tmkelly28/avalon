@@ -20,22 +20,10 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameService, UserService, FbGamesService, $firebaseArray) {
+app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameService, UserService, FbGamesService) {
 
 	$scope.user = user;
 	$scope.games = games;
-
-	$scope.openModal = function () {
-		$uibModal.open({
-			templateUrl: 'js/lobby/lobby-modal.html',
-			controller: 'LobbyModalCtrl',
-			resolve: {
-				user: function () {
-					return UserService.fetchById($scope.user._id);
-				}
-			}
-		});
-	}
 
 	$scope.specialRules = function (game) {
 		let rules = [];
@@ -44,6 +32,21 @@ app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameServic
 		if (game.useOberon) rules.push('Oberon');
 		if (game.useLady) rules.push('Lady of the Lake');
 		return rules.join(' | ');
+	}
+
+	$scope.openModal = function () {
+		$uibModal.open({
+			templateUrl: 'js/lobby/lobby-modal.html',
+			controller: 'NewGameModalCtrl',
+			resolve: {
+				user: function () {
+					return UserService.fetchById($scope.user._id);
+				},
+				games: function () {
+					return FbGamesService.fetchAllGames();
+				}
+			}
+		});
 	}
 
 	$scope.confirm = function (gameId) {
@@ -63,9 +66,10 @@ app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameServic
 
 });
 
-app.controller('LobbyModalCtrl', function ($scope, $state, $uibModalInstance, user, GameService) {
+app.controller('NewGameModalCtrl', function ($scope, $state, games, $uibModalInstance, user, GameService) {
 
 	$scope.user = user;
+	$scope.games = games;
 	
 	$scope.createNewGame = function () {
 		GameService.create({

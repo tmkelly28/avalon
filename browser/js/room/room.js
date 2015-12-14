@@ -12,25 +12,32 @@ app.config(function ($stateProvider) {
 		resolve: {
 			game: function ($stateParams, GameService) {
 				return GameService.fetchById($stateParams.id);
+			},
+			chats: function ($stateParams, FbChatService) {
+				return FbChatService.getFbChatRef($stateParams.id);
+			},
+			players: function ($stateParams, FbPlayerService) {
+				return FbPlayerService.getPlayers($stateParams.id)
+			},
+			gameState: function ($stateParams, FbGameStateService) {
+				return FbGameStateService.getFbGameStateRef($stateParams.id);
 			}
 		}
 	});
 });
 
-app.controller('RoomCtrl', function ($scope, $firebaseArray, game, FbChatService, Session) {
+app.controller('RoomCtrl', 
+	function ($scope, $firebaseArray, game, chats, gameState, players, Session, FbChatService) {
 
 	const author = Session.user.displayName;
 
 	$scope.game = game;
-	$scope.fbChat = FbChatService.getFbChatRef(game._id)
-	.then(chatRef => {
-		$scope.chats = $firebaseArray(chatRef)
-	});
-
+	$scope.chats = chats;
+	$scope.players = players;
+	gameState.$bindTo($scope, 'gameState');
+	
 	$scope.addMessage = function () {
-		$scope.chats.$add({
-			text: `${author}: ${$scope.newMessage.text}`
-		});
+		FbChatService.addChat($scope.chats, author, $scope.newMessage.text);
 	}
 
 });

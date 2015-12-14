@@ -16,7 +16,7 @@
     	</thead>
 		<tbody>
             <tr ng-repeat='game in games'>
-    			<th scope="row"><a ui-sref="room({ id: game._id })">{{ game.name }}</a></th>
+    			<th scope="row"><a href="#" ng-click="confirm(game._id)">{{ game.name }}</a></th>
     			<td> {{ game.hostName }} </td>
     			<td> {{ game.size }} </td>
     			<td> {{ game.maxSize }} </td>

@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('GameService', function ($http, FbLobbyService, Session) {
+app.service('GameService', function ($http, FbGamesService, Session) {
 
 	function toData (res) {
 		return res.data;
@@ -28,7 +28,7 @@ app.service('GameService', function ($http, FbLobbyService, Session) {
 		.then(game => {
 			// attach hostName for the lobby view, since not populated in the firebase ref
 			game.hostName = Session.user.displayName
-			return FbLobbyService.pushNewGame(game)
+			return FbGamesService.pushNewGame(game)
 		})
 		.then(null, errorHandler);
 	}

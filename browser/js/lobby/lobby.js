@@ -1,6 +1,7 @@
 'use strict';
 
 app.config(function ($stateProvider) {
+	
 	$stateProvider.state('lobby', {
 		url: '/lobby/:uid',
 		templateUrl: 'js/lobby/lobby.html',
@@ -19,13 +20,19 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, user, $uibModal) {
+app.controller('LobbyCtrl', function ($scope, user, $uibModal, GameService, UserService) {
 
 	$scope.user = user;
+
 	$scope.openModal = function () {
 		$uibModal.open({
 			templateUrl: 'js/lobby/lobby-modal.html',
-			controller: 'LobbyModalCtrl'
+			controller: 'LobbyModalCtrl',
+			resolve: {
+				user: function () {
+					return UserService.fetchById($scope.user._id);
+				}
+			}
 		});
 	}
 
@@ -40,8 +47,26 @@ app.controller('LobbyCtrl', function ($scope, user, $uibModal) {
 
 });
 
-app.controller('LobbyModalCtrl', function ($scope, GameService) {
+app.controller('LobbyModalCtrl', function ($scope, $state, $uibModalInstance, user, GameService) {
 
-	$scope.createNewGame = function () {}
+	$scope.user = user;
 	
+	$scope.createNewGame = function () {
+		GameService.create({
+			host: $scope.user._id,
+			active: true,
+			name: $scope.newGame.name,
+			maxSize: $scope.newGame.numberOfPlayers,
+			size: 1,
+			usePercival: $scope.newGame.percival,
+			useMorgana: $scope.newGame.morgana,
+			useOberon: $scope.newGame.oberon,
+			useLady: $scope.newGame.lady
+		})
+		.then(game => {
+			$state.go('room', {id: game._id});
+			$uibModalInstance.dismiss();
+		});
+	}
+
 });

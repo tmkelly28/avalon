@@ -23,7 +23,7 @@ router.param('id', function setUser (req, res, next, id) {
 
 // GET to find a single user and associated statistics
 router.get('/:id', function fetchOne (req, res) {
-     res.status(200).json(req.targetUser)
+     res.status(200).json(req.targetUser);
 });
 
 // PUT to update a single user

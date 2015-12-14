@@ -15,6 +15,9 @@ const schema = new mongoose.Schema({
 	maxSize: {
 		type: Number
 	},
+	name: {
+		type: String
+	},
 	size: {
 		type: Number
 	},

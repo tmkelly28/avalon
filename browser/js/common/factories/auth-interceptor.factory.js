@@ -1,6 +1,7 @@
 'use strict';
 
 app.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS) {
+    
     const statusDict = {
         401: AUTH_EVENTS.notAuthenticated,
         403: AUTH_EVENTS.notAuthorized,

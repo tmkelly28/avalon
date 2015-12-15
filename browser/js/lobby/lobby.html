@@ -18,7 +18,7 @@
             <tr ng-repeat='game in games'>
     			<th scope="row"><a href="#" ng-click="openJoinGameModal(game)">{{ game.name }}</a></th>
     			<td> {{ game.hostName }} </td>
-    			<td> {{ game.size }} </td>
+    			<td> {{ game.players.length }} </td>
     			<td> {{ game.maxSize }} </td>
     			<td> {{ specialRules(game) }} </td>
             </tr>

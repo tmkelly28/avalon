@@ -20,7 +20,7 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, FbGamesService, UserService, FbPlayerService) {
+app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, FbGamesService, UserService) {
 
 	$scope.user = user;
 	$scope.games = games;
@@ -59,9 +59,6 @@ app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, FbGamesSer
 				},
 				user: function () {
 					return UserService.fetchById($scope.user._id);
-				},
-				players: function () {
-					return FbPlayerService.fetchById(game.$id)
 				}
 			}
 		});
@@ -75,38 +72,35 @@ app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, 
 	$scope.games = games;
 	
 	$scope.createNewGame = function () {
-		FbGamesService.pushNewGame({
+		let key = FbGamesService.pushNewGame({
 			host: $scope.user._id,
 			hostName: $scope.user.displayName,
 			active: true,
 			name: $scope.newGame.name,
 			maxSize: $scope.newGame.numberOfPlayers,
-			size: 1,
 			usePercival: $scope.newGame.percival || false,
 			useMorgana: $scope.newGame.morgana || false,
 			useOberon: $scope.newGame.oberon || false,
 			useLady: $scope.newGame.lady || false
-		})
-		.then(key => {
-			$state.go('room', { key: key });
-			$uibModalInstance.dismiss();
 		});
+		FbGamesService.addPlayerToGame(key, $scope.user);
+		$state.go('room', { key: key });
+		$uibModalInstance.dismiss();
 	}
 
 });
 
-app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance, game, user, players, FbPlayerService) {
+app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance, game, user, FbGamesService) {
 
 	$scope.game = game;
 	$scope.user = user;
-	$scope.players = players;
 
 	$scope.dismiss = function () {
 		$uibModalInstance.dismiss();
 	}
 
 	$scope.joinGame = function () {
-		FbPlayerService.addPlayer($scope.players, $scope.user);
+		FbGamesService.addPlayerToGame($scope.game.$id, $scope.user);
 		$state.go('room', { key: $scope.game.$id });
 		$uibModalInstance.dismiss();
 	}

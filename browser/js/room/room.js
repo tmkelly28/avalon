@@ -16,9 +16,6 @@ app.config(function ($stateProvider) {
 			chats: function ($stateParams, FbChatService) {
 				return FbChatService.fetchById($stateParams.key);
 			},
-			players: function ($stateParams, FbPlayerService) {
-				return FbPlayerService.fetchById($stateParams.key)
-			},
 			gameState: function ($stateParams, FbGameStateService) {
 				return FbGameStateService.fetchById($stateParams.key);
 			}
@@ -27,13 +24,12 @@ app.config(function ($stateProvider) {
 });
 
 app.controller('RoomCtrl', 
-	function ($scope, $firebaseArray, $stateParams, game, chats, gameState, players, Session, FbChatService) {
+	function ($scope, $firebaseArray, $stateParams, game, chats, gameState, Session, FbChatService) {
 
 	const author = Session.user.displayName;
 
 	$scope.game = game;
 	$scope.chats = chats;
-	$scope.players = players;
 	gameState.$bindTo($scope, 'gameState');
 	
 	$scope.addMessage = function () {

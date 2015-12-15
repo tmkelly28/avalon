@@ -3,31 +3,31 @@
 app.config(function ($stateProvider) {
 	
 	$stateProvider.state('room', {
-		url: '/room/:id',
+		url: '/room/:key',
 		templateUrl: 'js/room/room.html',
 		controller: 'RoomCtrl',
 		data: {
 			authenticate: true
 		},
 		resolve: {
-			game: function ($stateParams, GameService) {
-				return GameService.fetchById($stateParams.id);
+			game: function ($stateParams, FbGamesService) {
+				return FbGamesService.fetchById($stateParams.key);
 			},
 			chats: function ($stateParams, FbChatService) {
-				return FbChatService.fetchById($stateParams.id);
+				return FbChatService.fetchById($stateParams.key);
 			},
 			players: function ($stateParams, FbPlayerService) {
-				return FbPlayerService.getPlayers($stateParams.id)
+				return FbPlayerService.fetchById($stateParams.key)
 			},
 			gameState: function ($stateParams, FbGameStateService) {
-				return FbGameStateService.fetchById($stateParams.id);
+				return FbGameStateService.fetchById($stateParams.key);
 			}
 		}
 	});
 });
 
 app.controller('RoomCtrl', 
-	function ($scope, $firebaseArray, game, chats, gameState, players, Session, FbChatService) {
+	function ($scope, $firebaseArray, $stateParams, game, chats, gameState, players, Session, FbChatService) {
 
 	const author = Session.user.displayName;
 

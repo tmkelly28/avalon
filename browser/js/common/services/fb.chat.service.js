@@ -9,8 +9,8 @@ app.service('FbChatService', function ($firebaseArray) {
 		return $firebaseArray(fb);
 	}
 
-	this.addChat = function (chatsArray, author, text) {
-		chatsArray.$add({
+	this.addChat = function (fbArray, author, text) {
+		fbArray.$add({
 			text: `${author}: ${text}`
 		});
 	}

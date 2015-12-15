@@ -20,7 +20,7 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, GameService, UserService, FbGamesService) {
+app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, FbGamesService, UserService, FbPlayerService) {
 
 	$scope.user = user;
 	$scope.games = games;
@@ -34,9 +34,9 @@ app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, GameServic
 		return rules.join(' | ');
 	}
 
-	$scope.openModal = function () {
+	$scope.openNewGameModal = function () {
 		$uibModal.open({
-			templateUrl: 'js/lobby/lobby-modal.html',
+			templateUrl: 'js/lobby/new-game-modal.html',
 			controller: 'NewGameModalCtrl',
 			resolve: {
 				user: function () {
@@ -49,19 +49,19 @@ app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, GameServic
 		});
 	}
 
-	$scope.confirm = function (gameId) {
+	$scope.openJoinGameModal = function (game) {
 		$uibModal.open({
-			templateUrl: 'js/lobby/confirm-modal.html',
-			controller: 'ConfirmModalCtrl',
+			templateUrl: 'js/lobby/join-game-modal.html',
+			controller: 'JoinGameModalCtrl',
 			resolve: {
 				game: function () {
-					return GameService.fetchById(gameId)
+					return FbGamesService.fetchById(game.$id);
 				},
 				user: function () {
 					return UserService.fetchById($scope.user._id);
 				},
-				games: function () {
-					return FbGamesService.fetchAllGames();
+				players: function () {
+					return FbPlayerService.fetchById(game.$id)
 				}
 			}
 		});
@@ -69,45 +69,45 @@ app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, GameServic
 
 });
 
-app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, user, games, GameService) {
+app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, user, games, FbGamesService) {
 
 	$scope.user = user;
 	$scope.games = games;
 	
 	$scope.createNewGame = function () {
-		GameService.create({
+		FbGamesService.pushNewGame({
 			host: $scope.user._id,
+			hostName: $scope.user.displayName,
 			active: true,
 			name: $scope.newGame.name,
 			maxSize: $scope.newGame.numberOfPlayers,
 			size: 1,
-			usePercival: $scope.newGame.percival,
-			useMorgana: $scope.newGame.morgana,
-			useOberon: $scope.newGame.oberon,
-			useLady: $scope.newGame.lady
+			usePercival: $scope.newGame.percival || false,
+			useMorgana: $scope.newGame.morgana || false,
+			useOberon: $scope.newGame.oberon || false,
+			useLady: $scope.newGame.lady || false
 		})
-		.then(game => {
-			$state.go('room', {id: game._id});
+		.then(key => {
+			$state.go('room', { key: key });
 			$uibModalInstance.dismiss();
 		});
 	}
 
 });
 
-app.controller('ConfirmModalCtrl', function ($scope, $state, $uibModalInstance, game, user, games, FbPlayerService) {
+app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance, game, user, players, FbPlayerService) {
 
 	$scope.game = game;
 	$scope.user = user;
-	$scope.games = games;
+	$scope.players = players;
 
 	$scope.dismiss = function () {
 		$uibModalInstance.dismiss();
 	}
 
 	$scope.joinGame = function () {
-		let gameId = $scope.game._id
-		FbPlayerService.addPlayer($scope.games, $scope.user, gameId);
-		$state.go('room', { id: gameId });
+		FbPlayerService.addPlayer($scope.players, $scope.user);
+		$state.go('room', { key: $scope.game.$id });
 		$uibModalInstance.dismiss();
 	}
 

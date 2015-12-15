@@ -14,13 +14,13 @@ app.config(function ($stateProvider) {
 				return GameService.fetchById($stateParams.id);
 			},
 			chats: function ($stateParams, FbChatService) {
-				return FbChatService.getFbChatRef($stateParams.id);
+				return FbChatService.fetchById($stateParams.id);
 			},
 			players: function ($stateParams, FbPlayerService) {
 				return FbPlayerService.getPlayers($stateParams.id)
 			},
 			gameState: function ($stateParams, FbGameStateService) {
-				return FbGameStateService.getFbGameStateRef($stateParams.id);
+				return FbGameStateService.fetchById($stateParams.id);
 			}
 		}
 	});

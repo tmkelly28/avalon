@@ -20,7 +20,7 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameService, UserService, FbGamesService) {
+app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, GameService, UserService, FbGamesService) {
 
 	$scope.user = user;
 	$scope.games = games;
@@ -59,6 +59,9 @@ app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameServic
 				},
 				user: function () {
 					return UserService.fetchById($scope.user._id);
+				},
+				games: function () {
+					return FbGamesService.fetchAllGames();
 				}
 			}
 		});
@@ -66,7 +69,7 @@ app.controller('LobbyCtrl', function ($scope, user, games, $uibModal, GameServic
 
 });
 
-app.controller('NewGameModalCtrl', function ($scope, $state, games, $uibModalInstance, user, GameService) {
+app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, user, games, GameService) {
 
 	$scope.user = user;
 	$scope.games = games;
@@ -91,10 +94,11 @@ app.controller('NewGameModalCtrl', function ($scope, $state, games, $uibModalIns
 
 });
 
-app.controller('ConfirmModalCtrl', function ($scope, $state, $uibModalInstance, game, user, FbPlayerService) {
+app.controller('ConfirmModalCtrl', function ($scope, $state, $uibModalInstance, game, user, games, FbPlayerService) {
 
 	$scope.game = game;
 	$scope.user = user;
+	$scope.games = games;
 
 	$scope.dismiss = function () {
 		$uibModalInstance.dismiss();
@@ -102,10 +106,8 @@ app.controller('ConfirmModalCtrl', function ($scope, $state, $uibModalInstance, 
 
 	$scope.joinGame = function () {
 		let gameId = $scope.game._id
-		FbPlayerService.getPlayers(gameId)
-		.then(players => FbPlayerService.addPlayer(players, $scope.user))
-		.then($state.go('room', {id: gameId}));
-
+		FbPlayerService.addPlayer($scope.games, $scope.user, gameId);
+		$state.go('room', { id: gameId });
 		$uibModalInstance.dismiss();
 	}
 

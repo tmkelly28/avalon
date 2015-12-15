@@ -15,25 +15,43 @@ app.config(function ($stateProvider) {
 			},
 			chats: function ($stateParams, FbChatService) {
 				return FbChatService.fetchById($stateParams.key);
-			},
-			gameState: function ($stateParams, FbGameStateService) {
-				return FbGameStateService.fetchById($stateParams.key);
 			}
 		}
 	});
 });
 
 app.controller('RoomCtrl', 
-	function ($scope, $firebaseArray, $stateParams, game, chats, gameState, Session, FbChatService) {
+	function ($scope, $firebaseArray, $stateParams, game, chats, Session, FbChatService, FbGamesService) {
 
 	const author = Session.user.displayName;
 
 	$scope.game = game;
 	$scope.chats = chats;
-	gameState.$bindTo($scope, 'gameState');
-	
+
 	$scope.addMessage = function () {
 		FbChatService.addChat($scope.chats, author, $scope.newMessage.text);
+	}
+
+	$scope.isHost = function () {
+		return Session.user._id === $scope.game.host;
+	}
+
+	$scope.ableToBegin = function () {
+		let numberOfPlayers = Object.keys($scope.game.players).length;
+		return numberOfPlayers >= $scope.game.targetSize;
+	}
+
+	$scope.startGame = function () {
+		FbGamesService.startGame($scope.game);
+	}
+
+	$scope.voteApprove = function () {};
+	$scope.voteReject = function () {};
+	$scope.successQuest = function () {};
+	$scope.failQuest = function () {};
+
+	$scope.test = function (data) {
+		console.log(data)
 	}
 
 });

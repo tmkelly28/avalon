@@ -27,11 +27,17 @@ app.controller('LobbyCtrl', function ($scope, $uibModal, user, games, FbGamesSer
 
 	$scope.specialRules = function (game) {
 		let rules = [];
+		if (game.useMordred) rules.push('Mordred');
 		if (game.usePercival) rules.push('Percival');
 		if (game.useMorgana) rules.push('Morgana');
 		if (game.useOberon) rules.push('Oberon');
 		if (game.useLady) rules.push('Lady of the Lake');
 		return rules.join(' | ');
+	}
+
+	$scope.numberOfPlayers = function (game) {
+		if (game.players) return Object.keys(game.players).length;
+		else return 1;
 	}
 
 	$scope.openNewGameModal = function () {
@@ -75,9 +81,10 @@ app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, 
 		let key = FbGamesService.pushNewGame({
 			host: $scope.user._id,
 			hostName: $scope.user.displayName,
-			active: true,
+			waitingToPlay: true,
 			name: $scope.newGame.name,
-			maxSize: $scope.newGame.numberOfPlayers,
+			targetSize: $scope.newGame.numberOfPlayers,
+			useMordred: $scope.newGame.mordred || false,
 			usePercival: $scope.newGame.percival || false,
 			useMorgana: $scope.newGame.morgana || false,
 			useOberon: $scope.newGame.oberon || false,

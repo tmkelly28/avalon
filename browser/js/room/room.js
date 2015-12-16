@@ -15,18 +15,22 @@ app.config(function ($stateProvider) {
 			},
 			chats: function ($stateParams, FbChatService) {
 				return FbChatService.fetchById($stateParams.key);
+			},
+			user: function (UserService, Session) {
+				return UserService.fetchById(Session.user._id);
 			}
 		}
 	});
 });
 
 app.controller('RoomCtrl', 
-	function ($scope, $firebaseArray, $stateParams, game, chats, Session, FbChatService, FbGamesService) {
+	function ($scope, $firebaseArray, $stateParams, game, chats, user, Session, FbChatService, FbGamesService) {
 
 	const author = Session.user.displayName;
 
 	$scope.game = game;
 	$scope.chats = chats;
+	$scope.user = user;
 
 	$scope.addMessage = function () {
 		FbChatService.addChat($scope.chats, author, $scope.newMessage.text);
@@ -45,13 +49,13 @@ app.controller('RoomCtrl',
 		FbGamesService.startGame($scope.game);
 	}
 
+	$scope.me = function (player) {
+		return player._id === $scope.user._id;
+	}
+
 	$scope.voteApprove = function () {};
 	$scope.voteReject = function () {};
 	$scope.successQuest = function () {};
 	$scope.failQuest = function () {};
-
-	$scope.test = function (data) {
-		console.log(data)
-	}
 
 });

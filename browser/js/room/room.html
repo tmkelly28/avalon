@@ -4,12 +4,15 @@
 	<div class="col-md-12">
 		<div class="well well-sm player-box" 
 			href="#"
-			ng-repeat="player in game.players"
-			ng-click="test(player)">
-			{{ player.displayName }}
-			<img ng-src="{{player.picture}}"/>
+			ng-repeat="player in game.players">
+			<img ng-src="{{ player.picture }}"/>
+			<span>{{ player.displayName }}</span>
+			<img class="character" 
+				 ng-src="{{ player.imageUrl }}"
+				 ng-if="me(player)"/>
 		</div>
 	</div>
+
 
 	<div class="well" id="chat">
 		<p ng-repeat="chat in chats | orderBy:'-'">{{ chat.text }}</p>
@@ -57,13 +60,4 @@
 		    Fail
 		</a>
 	</form>
-
-
-
-	<!-- testing -->
-	<div class="well">
-		<p> Game: {{ game }}</p>
-		<p>Players: {{ game.players }}</p>
-	</div>
-
 </section>

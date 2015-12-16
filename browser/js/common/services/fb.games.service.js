@@ -64,12 +64,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	this.startGame = function (game) {
 		let path = new Firebase("https://resplendent-torch-2655.firebaseio.com/games/" + game.$id);
 		let quests = GameFactory.assignQuests(game);
-		let players = GameFactory.assignPlayerRoles(game);
+		GameFactory.assignPlayerRoles(game);
 		let turnOrder = _.shuffle(Object.keys(game.players));
 
 		path.update({
 			waitingToPlay: false,
-			players: players,
 			turnOrder: turnOrder,
 			quests: quests,
 			loyalScore: 0,

@@ -13,6 +13,9 @@ const schema = new mongoose.Schema({
     },
     displayName: {
         type: String
+    },
+    playerKey: {
+        type: String
     }
 });
 

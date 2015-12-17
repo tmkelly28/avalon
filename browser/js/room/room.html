@@ -10,9 +10,32 @@
 			<img class="character" 
 				 ng-src="{{ player.imageUrl }}"
 				 ng-if="me(player)"/>
+			<a  name="addToTeam"
+				ng-if="myTurn && roomLeftOnTeam && (currentGamePhase === 'team building')"
+				href="#"
+				ng-click="addToTeam(player)">
+				Add to team</a>
+			<img ng-src="/icons/approve.png"
+				 ng-if="player.approvedQuest && (currentGamePhase === 'quest voting')"/>
+			<img ng-src="/icons/reject.png"
+				 ng-if="!player.approvedQuest && (currentGamePhase === 'quest voting')"/>
 		</div>
 	</div>
 
+	<div class="well" id="chat">
+		<p>Me: {{ user.displayName }}</p>
+		<p>Turn: {{ game.currentPlayerTurn.displayName }}</p>
+		<p>Team:</p>
+			<ul>
+				<li ng-repeat="p in game.currentQuestPlayersGoing">
+					{{p.displayName}}
+				</li>
+			</ul>
+		<p>On quest?: {{ user.onQuest }}</p>
+		<p>Approved?: {{ user.approvedQuest }}
+		<p>Vote Track: {{ game.currentVoteTrack }}</p>
+		<p>Phase: {{ game.currentGamePhase }}</p>
+	</div>
 
 	<div class="well" id="chat">
 		<p ng-repeat="chat in chats | orderBy:'-'">{{ chat.text }}</p>
@@ -41,23 +64,39 @@
 		</a>
 		<a 
 			class="btn btn-default"  
-		    ng-click="voteApprove()">
+		    ng-click="voteApprove()"
+		    ng-if="currentGamePhase === 'team voting'">
 		    Approve
 		</a>
 		<a 
 			class="btn btn-default"  
-		    ng-click="voteReject()">
+		    ng-click="voteReject()"
+		    ng-if="currentGamePhase === 'team voting'">
 		    Reject
 		</a>
 		<a 
 			class="btn btn-default"  
-		    ng-click="successQuest()">
+		    ng-click="successQuest()"
+		    ng-if="(currentGamePhase === 'quest voting') && user.onQuest">
 		    Success
 		</a>
 		<a 
 			class="btn btn-default"  
-		    ng-click="failQuest()">
+		    ng-click="failQuest()"
+		    ng-if="(currentGamePhase === 'quest voting') && user.onQuest">
 		    Fail
+		</a>
+		<a 
+			class="btn btn-default"  
+		    ng-click="proposeTeam()"
+		    ng-if="myTurn && (currentGamePhase === 'team building')">
+		    Propose Quest
+		</a>
+		<a 
+			class="btn btn-default"
+			ng-if="myTurn && (currentGamePhase === 'team building')"  
+		    ng-click="resetTeam()">
+		    Reset Team
 		</a>
 	</form>
 </section>

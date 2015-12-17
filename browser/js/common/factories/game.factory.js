@@ -36,10 +36,13 @@ app.factory('GameFactory', function () {
 
 	factory.assignPlayerRoles = function (game) {
 
-		function Character (loyalty, character, imageUrl) {
+		function Character (loyalty, character, imageUrl, knownToMerlin, knownToEvil, knownToPercival) {
 			this.loyalty = loyalty;
 			this.character = character;
-			this.imageUrl = imageUrl
+			this.imageUrl = imageUrl;
+			this.knownToMerlin = knownToMerlin;
+			this.knownToEvil = knownToEvil;
+			this.knownToPercival = knownToPercival;
 		}
 
 		let characters = [];
@@ -70,62 +73,48 @@ app.factory('GameFactory', function () {
 		}
 		// add special characters
 		if (game.usePercival) {
-			characters.push(new Character('good', 'Percival', '/icons/percival.png'));
+			characters.push(new Character('good', 'Percival', '/icons/percival.png', false, false, false));
 			good--;
 		}
 		if (game.useMordred && bad > 1) {
-			characters.push(new Character('evil', 'Mordred', '/icons/mordred.png'));
+			characters.push(new Character('evil', 'Mordred', '/icons/mordred.png', false, true, false));
 			bad--;
 		}
 		if (game.useMorgana && bad > 1) {
-			characters.push(new Character('evil', 'Morgana', '/icons/morgana.png'));
+			characters.push(new Character('evil', 'Morgana', '/icons/morgana.png', true, true, true));
 			bad--;
 		}
 		if (game.useOberon && bad > 1) {
-			characters.push(new Character('evil', 'Oberon', '/icons/oberon.png'));
+			characters.push(new Character('evil', 'Oberon', '/icons/oberon.png', true, false, false));
 		}
 		// add remaining characters, including assassin and merlin
-		characters.push(new Character('evil', 'Assassin', '/icons/assassin.png'));
+		characters.push(new Character('evil', 'Assassin', '/icons/assassin.png', true, true, false));
 		bad--;
-		characters.push(new Character('good', 'Merlin', '/icons/merlin.png'));
+		characters.push(new Character('good', 'Merlin', '/icons/merlin.png', false, false, true));
 		good--;
 		while (good > 0) {
-			characters.push(new Character('good', 'Servant of Arthur', '/icons/loyal_' + good + '.png'));
+			characters.push(new Character('good', 'Servant of Arthur', '/icons/loyal_' + good + '.png', false, false, false));
 			good--;
 		}
 		while (bad > 0) {
-			characters.push(new Character('evil', 'Minion of Mordred', '/icons/minion_' + bad + '.png'));
+			characters.push(new Character('evil', 'Minion of Mordred', '/icons/minion_' + bad + '.png', true, true, false));
 			bad--;
 		}
 		// shuffle characters
 		characters = _.shuffle(characters);
 
+		// assign characters
 		for (let player in game.players) {
-			let ref = new Firebase("https://resplendent-torch-2655.firebaseio.com/games/" + game.$id + '/players/' + player);
-			ref.update({
+			let playerRef = new Firebase("https://resplendent-torch-2655.firebaseio.com/games/" + game.$id + '/players/' + player);
+			playerRef.update({
 				loyalty: characters[idx].loyalty,
 				character: characters[idx].character,
-				imageUrl: characters[idx].imageUrl
+				imageUrl: characters[idx].imageUrl,
+				knownToMerlin: characters[idx].knownToMerlin,
+				knownToEvil: characters[idx].knownToEvil,
+				knownToPercival: characters[idx].knownToPercival
 			});
 			idx++;
-		}
-		return game.players;
-	};
-	
-	factory.playAvalon = function (game) {
-		console.log(game);
-		return;
-		let firstTurn = true;
-		while (game.currentGamePhase !== 'end') {
-
-			// 1. Set the current player's turn, and phase to team building
-			if (!firstTurn) factory.beginNewTurn(game);
-			firstTurn = false;
-			// 2. Wait until currentQuestTeam is set appropriately
-			while (factory.waitingForTeamBuilding(game)) continue;
-			// 3. Check if the proposed team passes or not
-			if (factory.questIsAccepted(game)) factory.goOnQuest(game);
-			else continue;
 		}
 	};
 

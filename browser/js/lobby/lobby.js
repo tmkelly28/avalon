@@ -90,9 +90,11 @@ app.controller('NewGameModalCtrl', function ($scope, $state, $uibModalInstance, 
 			useOberon: $scope.newGame.oberon || false,
 			useLady: $scope.newGame.lady || false
 		});
-		FbGamesService.addPlayerToGame(key, $scope.user);
-		$state.go('room', { key: key });
-		$uibModalInstance.dismiss();
+		FbGamesService.addPlayerToGame(key, $scope.user)
+		.then(() => {
+			$state.go('room', { key: key });
+			$uibModalInstance.dismiss();
+		});
 	}
 
 });
@@ -107,9 +109,11 @@ app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance,
 	}
 
 	$scope.joinGame = function () {
-		FbGamesService.addPlayerToGame($scope.game.$id, $scope.user);
-		$state.go('room', { key: $scope.game.$id });
-		$uibModalInstance.dismiss();
+		FbGamesService.addPlayerToGame($scope.game.$id, $scope.user)
+		.then(() => {
+			$state.go('room', { key: $scope.game.$id });
+			$uibModalInstance.dismiss();
+		});
 	}
 
 });

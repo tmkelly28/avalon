@@ -4,7 +4,6 @@ const chalk = require('chalk');
 // Requires in ./db/index.js -- which returns a promise that represents
 // mongoose establishing a connection to a MongoDB database.
 const startDb = require('./db');
-const startFb = require('./fb');
 
 // Create a node server instance! cOoL!
 const server = require('http').createServer();
@@ -25,7 +24,7 @@ const startServer = function () {
 
 };
 
-startDb.then(startFb).then(createApplication).then(startServer).catch(function (err) {
+startDb.then(createApplication).then(startServer).catch(function (err) {
     console.error(chalk.red(err.stack));
     process.kill(1);
 });

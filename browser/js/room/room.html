@@ -11,14 +11,14 @@
 				 ng-src="{{ player.imageUrl }}"
 				 ng-if="me(player)"/>
 			<a  name="addToTeam"
-				ng-if="myTurn && roomLeftOnTeam && (currentGamePhase === 'team building')"
+				ng-if="myTurn && roomLeftOnTeam && (game.currentGamePhase === 'team building')"
 				href="#"
 				ng-click="addToTeam(player)">
 				Add to team</a>
 			<img ng-src="/icons/approve.png"
-				 ng-if="player.approvedQuest && (currentGamePhase === 'quest voting')"/>
+				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting')"/>
 			<img ng-src="/icons/reject.png"
-				 ng-if="!player.approvedQuest && (currentGamePhase === 'quest voting')"/>
+				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting')"/>
 		</div>
 	</div>
 
@@ -73,36 +73,36 @@
 		<a 
 			class="btn btn-default"  
 		    ng-click="voteApprove()"
-		    ng-if="currentGamePhase === 'team voting'">
+		    ng-if="game.currentGamePhase === 'team voting'">
 		    Approve
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="voteReject()"
-		    ng-if="currentGamePhase === 'team voting'">
+		    ng-if="game.currentGamePhase === 'team voting'">
 		    Reject
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="successQuest()"
-		    ng-if="(currentGamePhase === 'quest voting') && user.onQuest">
+		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest">
 		    Success
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="failQuest()"
-		    ng-if="(currentGamePhase === 'quest voting') && user.onQuest">
+		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest">
 		    Fail
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="proposeTeam()"
-		    ng-if="myTurn && (currentGamePhase === 'team building')">
+		    ng-if="myTurn && (game.currentGamePhase === 'team building')">
 		    Propose Quest
 		</a>
 		<a 
 			class="btn btn-default"
-			ng-if="myTurn && (currentGamePhase === 'team building')"  
+			ng-if="myTurn && (game.currentGamePhase === 'team building')"  
 		    ng-click="resetTeam()">
 		    Reset Team
 		</a>

@@ -33,24 +33,16 @@ app.controller('RoomCtrl',
 	$scope.user = user;
 	$scope.userRecord = userRecord;
 	$scope.players = players;
-	$scope.currentGamePhase = game.currentGamePhase;
 	$scope.myTurn = false;
 	$scope.roomLeftOnTeam = true;
 
 	const author = Session.user.displayName;
 	const fb = "https://resplendent-torch-2655.firebaseio.com/games/";
 
-	const currentPlayerRef = new Firebase(fb + $scope.game.$id + '/players/' + $scope.userRecord.playerKey);
-
 	const currentPlayerTurnRef = new Firebase(fb + $scope.game.$id + '/currentPlayerTurn');
 	currentPlayerTurnRef.on('value', snap => {
 		if (snap.val() && (snap.val()._id === Session.user._id)) $scope.myTurn = true;
 		else $scope.myTurn = false;
-	});
-
-	const currentGamePhaseRef = new Firebase(fb + $scope.game.$id + '/currentGamePhase');
-	currentGamePhaseRef.on('value', snap => {
-		$scope.currentGamePhase = snap.val();
 	});
 
 	const currentQuestPlayersGoingRef = new Firebase(fb + $scope.game.$id + '/currentQuestPlayersGoing');

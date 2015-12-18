@@ -5,28 +5,98 @@
 		text-align: center;
 	}
 
+	h5 {
+		text-align: center;
+	}
+
 	.well {
 		max-height: 200px;
 		overflow: scroll;
 	}
 
-	img {
-		width: 50px;
-		height: 50px;
+	#buttonBar {
+		position: fixed;
+		bottom: 110px;
+		left: 15px;
+		width: 40%;
+	}
+
+	#chatEntry {
+		position: fixed;
+		bottom: 15px;
+		left: 15px;
+		width: 40%;
+	}
+
+	#gamelog {
+		position: fixed;
+		bottom: 220px;
+		right: 0px;
+		width: 50%;
+		height: 10%;
+	}
+
+	#chat {
+		position: fixed;
+		bottom: 15px;
+		right: 0px;
+		width: 50%;
+		height: 50%;
+	}
+
+	#playerPicture {
+		width: 100px;
+		height: 100px;
 		border-radius: 50%;
 		display: block;
 		margin: 0 auto;
 		float: left;
 	}
 
+	.voteToken {
+		position: relative;
+		height: 77px;
+		width: 55px;
+		border-radius: 10%;
+		right: 5px;
+		z-index: -1;
+	}
+
+	.sigil {
+		position: relative;
+		height: 55px;
+		width: 37px;
+		border-radius: 10%;
+		right: 30px;
+		bottom: 20px;
+		z-index: 1;
+		box-shadow: 1px 1px 5px #888888;
+	}
+
 	img.character {
-		float: right;
+		position: relative;
+		border-radius: 10%;
+		right: 5px;
+		height: 77px;
+		width: 55px;
+		z-index: -5;
 	}
 
 	.player-box {
 		float: left;
 		width: 20%;
-		margin: 1%;
+		margin: 0;
+	}
+
+	.activePlayer {
+		box-shadow: 10px 10px 5px #888888;
+	}
+
+	.selectPlayer {
+		position: relative;
+		bottom: 0;
+		text-align: center;
+		padding: 10px;
 	}
 
 	.well {

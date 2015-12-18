@@ -88,7 +88,7 @@
 		margin: 0;
 	}
 
-	.activePlayer {
+	.activeShadow {
 		box-shadow: 10px 10px 5px #888888;
 	}
 
@@ -103,5 +103,53 @@
 		span {
 			padding: 5px;
 		}
+	}
+
+	#questLog {
+		position: fixed;
+		right: 0;
+		bottom: 30px;
+		width: 50%;
+		height: 50%;
+
+		div {
+			display: inline-block;
+		}
+	}
+
+	.quest {
+		display: inline-block;
+		border: 2px solid #888888;
+		border-radius: 70%;
+		font-size: 32px;
+		color: #888888;
+		margin: 5px;
+		padding: 10px 30px;
+	}
+
+	.questInfo {
+		color: #888888;
+		font-size: 12px;
+		position: absolute;
+		text-align: center;
+		top: 85px;
+	}
+
+	.questFail {
+		background-image:url('/icons/evil_token.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 85px 85px;
+	}
+
+	.questPass {
+		background-image:url('/icons/good_token.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 85px 85px;
+	}
+
+	.opaque {
+		opacity: 0;
 	}
 }

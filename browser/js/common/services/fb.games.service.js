@@ -21,7 +21,9 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		turnOrder: playerFirebaseKeys[],
 		quests: Quests[],
 			playersNeeded: Number,
-			toFail: Number
+			toFail: Number,
+			questNumber: Number,
+			result: String enum['fail', 'success']
 		loyalScore: Number,
 		evilScore: Number,
 		currentPlayerTurn: player{},
@@ -169,7 +171,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				if (snap.val() === 3) {
 					service.endGame(id, 'evil');
 				} else {
-					service.goToNextQuest(id);
+					service.goToNextQuest(id, 'fail');
 					service.goToNextTurn(id);					
 				}
 			});
@@ -179,18 +181,25 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				if (snap.val() === 3) {
 					service.endGame(id, 'good');
 				} else {
-					service.goToNextQuest(id);
+					service.goToNextQuest(id, 'success');
 					service.goToNextTurn(id);
 				}
 			});
 		}
 	};
 
-	service.goToNextQuest = function (id) {
+	service.goToNextQuest = function (id, prevQuestStatus) {
 		let gameRef = new Firebase(fb + id);
+		let questRef = new Firebase(fb + id + '/quests');
 		gameRef.once('value', snap => {
 			let game = snap.val();
+			let oldIdx = game.currentQuestIdx;
 			let newIdx = game.currentQuestIdx + 1;
+			questRef.once('value', snapshot => {
+				let questArray = snapshot.val();
+				questArray[oldIdx].status = prevQuestStatus;
+				questRef.set(questArray);
+			});
 			if (game.currentQuestIdx <= 5) {
 				gameRef.update({
 					currentVoteTrack: 0,

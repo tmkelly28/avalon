@@ -3,7 +3,8 @@ app.factory('GameFactory', function () {
 
 	factory.assignQuests = function (game) {
 
-		function Quest (playersNeeded, toFail) {
+		function Quest (questNumber, playersNeeded, toFail) {
+			this.questNumber = questNumber;
 			this.playersNeeded = playersNeeded;
 			this.toFail = toFail;
 		}
@@ -12,24 +13,24 @@ app.factory('GameFactory', function () {
 		let numberOfPlayers = Object.keys(game.players).length;
 
 		// first quest
-		if (numberOfPlayers < 8) quests.push(new Quest(2, 1));
-		else quests.push(new Quest(3, 1));
+		if (numberOfPlayers < 8) quests.push(new Quest(1, 2, 1));
+		else quests.push(new Quest(1, 3, 1));
 		// second quest
-		if (numberOfPlayers < 8) quests.push(new Quest(3, 1));
-		else quests.push(new Quest(4, 1));
+		if (numberOfPlayers < 8) quests.push(new Quest(2, 3, 1));
+		else quests.push(new Quest(2, 4, 1));
 		// third quest
-		if (numberOfPlayers === 5) quests.push(new Quest(2, 1));
-		else if (numberOfPlayers === 6) quests.push(new Quest(4, 1));
-		else if (numberOfPlayers === 7) quests.push(new Quest(3, 1));
-		else quests.push(new Quest(4, 1));
+		if (numberOfPlayers === 5) quests.push(new Quest(3, 2, 1));
+		else if (numberOfPlayers === 6) quests.push(new Quest(3, 4, 1));
+		else if (numberOfPlayers === 7) quests.push(new Quest(3, 3, 1));
+		else quests.push(new Quest(3, 4, 1));
 		// fourth quest
-		if (numberOfPlayers < 7) quests.push(new Quest(3, 1));
-		else if (numberOfPlayers === 7) quests.push(new Quest(4, 2));
-		else quests.push(new Quest(5, 2));
+		if (numberOfPlayers < 7) quests.push(new Quest(4, 3, 1));
+		else if (numberOfPlayers === 7) quests.push(new Quest(4, 4, 2));
+		else quests.push(new Quest(4, 5, 2));
 		// fifth quest
-		if (numberOfPlayers === 5) quests.push(new Quest(3, 1));
-		else if (numberOfPlayers < 8) quests.push(new Quest(4, 1));
-		else quests.push(new Quest(5, 1));
+		if (numberOfPlayers === 5) quests.push(new Quest(5, 3, 1));
+		else if (numberOfPlayers < 8) quests.push(new Quest(5, 4, 1));
+		else quests.push(new Quest(5, 5, 1));
 
 		return quests;
 	};

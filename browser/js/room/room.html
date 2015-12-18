@@ -1,15 +1,14 @@
 <section id="room">
-	<!-- <h1>{{ game.name.split('').join(' ') }}</h1> -->
-
+	<!-- Players -->
 	<div class="col-md-12" id="players">
-
+		<!-- Player -->
 		<div class="player-box" 
 			href="#"
 			ng-repeat="player in game.players">
 
 			<h5>{{ player.displayName }}</h5>
 			<img ng-src="{{ player.picture }}"
-				 ng-class="{activePlayer: (game.currentPlayerTurn._id === player._id)}" 
+				 ng-class="{activeShadow: (game.currentPlayerTurn._id === player._id)}" 
 				 id="playerPicture"/>
 
 			<img class="character" 
@@ -45,29 +44,19 @@
 
 	</div>
 
-	<!-- test box -->
-<!-- 	<div class="well" id="test">
-		<span>Me: {{ user.displayName }}</span>
-		<span>Turn: {{ game.currentPlayerTurn.displayName }}</span>
-		<span>Team:</span>
-			<ul>
-				<li ng-repeat="p in game.currentQuestPlayersGoing">
-					{{p.displayName}}
-				</li>
-			</ul>
-		<span>Quest #: {{ game.currentQuestIdx + 1 }}</span>
-		<span>Players Needed: {{ game.currentQuestPlayersNeeded }}</span>
-		<span>To fail: {{ game.currentQuestToFail }}</span>
-		<span>On quest?: {{ user.onQuest }}</span>
-		<span>Approved?: {{ user.approvedQuest }}
-		<span>Vote Track: {{ game.currentVoteTrack }}</span>
-		<span>Phase: {{ game.currentGamePhase }}</span>
-		<span>Loyal Score: {{ game.loyalScore }}</span>
-		<span>Evil Score: {{ game.evilScore }}</span>
-		<span>Team Approves: {{ game.currentQuestApproves }}</span>
-		<span>Team Rejects: {{ game.currentQuestRejects }}</span>
+	<!-- Quest Log -->
+	<div id="questLog">
+		<div ng-repeat="quest in game.quests">
+			<span class="quest" ng-class="{ activeShadow: ((game.currentQuestIdx + 1) === quest.questNumber), questFail: quest.status === 'fail', questPass: quest.status === 'success'}">
+				<p ng-class="{opaque: quest.status}">{{ quest.playersNeeded }}</p>
+			</span>
+			<span class="questInfo"> Quest # {{ quest.questNumber }}
+				<span ng-if="quest.toFail > 1">(2 fails)</span>
+			</span>
+		</div>
 	</div>
- -->
+
+ 	<!-- Game Log -->
  	<div class="well" id="gamelog">
  		<p ng-repeat="player in game.players">
  			<span ng-if="(user.character==='Percival') && (player.character==='Morgana')">
@@ -91,6 +80,8 @@
 	<div class="well" id="chat">
 		<p ng-repeat="chat in chats | orderBy:'-'">{{ chat.text }}</p>
 	</div>
+
+	<!-- Button Bar -->
 	<div id="buttonBar">
 		<form>
 			<a 
@@ -138,6 +129,8 @@
 			</a>
 		</form>
 	</div>
+
+	<!-- Chat Entry -->
 	<div id="chatEntry">
 		<form name="chat">
 			<div class="form-group">

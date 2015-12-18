@@ -35,7 +35,6 @@ app.controller('RoomCtrl',
 	$scope.userRecord = userRecord;
 	$scope.players = players;
 	$scope.myTurn = false;
-	$scope.isAssassin = false;
 
 	FbGamesService.registerListeners($scope.game, $scope.userRecord, $scope);
 

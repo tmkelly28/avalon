@@ -16,14 +16,14 @@
 				ng-click="addToTeam(player)">
 				Add to team</a>
 			<a name="guessMerlin"
-				ng-if="isAssassin && (game.currentGamePhase === 'guess merlin')"
+				ng-if="user.character === 'Assassin' && (game.currentGamePhase === 'guess merlin') && (player.loyalty === 'good' || player.character === 'Oberon')"
 				href="#"
 				ng-click="guessMerlin(player)">
 				Guess Merlin</a>
 			<img ng-src="/icons/approve.png"
-				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting')"/>
+				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"/>
 			<img ng-src="/icons/reject.png"
-				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting')"/>
+				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"/>
 		</div>
 	</div>
 

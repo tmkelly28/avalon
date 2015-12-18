@@ -41,7 +41,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		currentQuestRejects: Number,
 		currentQuestSuccess: Number,
 		currentQuestFail: Number,
-		merlinGuess: player{}					*/
+		merlinGuess: player{}					
+	*/
 
 	const fb = 'https://resplendent-torch-2655.firebaseio.com/games/';
 	const gamesRef = new Firebase("https://resplendent-torch-2655.firebaseio.com/games");

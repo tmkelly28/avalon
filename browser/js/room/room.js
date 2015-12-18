@@ -27,6 +27,7 @@ app.config(function ($stateProvider) {
 app.controller('RoomCtrl', 
 	function ($scope, game, chats, user, players, userRecord, Session, FbChatService, FbGamesService) {
 
+	const author = Session.user.displayName;
 
 	$scope.game = game;
 	$scope.chats = chats;
@@ -34,109 +35,9 @@ app.controller('RoomCtrl',
 	$scope.userRecord = userRecord;
 	$scope.players = players;
 	$scope.myTurn = false;
-	$scope.roomLeftOnTeam = true;
+	$scope.isAssassin = false;
 
-	const author = Session.user.displayName;
-	const fb = "https://resplendent-torch-2655.firebaseio.com/games/";
-
-	const currentPlayerTurnRef = new Firebase(fb + $scope.game.$id + '/currentPlayerTurn');
-	currentPlayerTurnRef.on('value', snap => {
-		if (snap.val() && (snap.val()._id === Session.user._id)) $scope.myTurn = true;
-		else $scope.myTurn = false;
-	});
-
-	const currentQuestPlayersGoingRef = new Firebase(fb + $scope.game.$id + '/currentQuestPlayersGoing');
-	const playerIsOnQuestRef = new Firebase(fb + $scope.game.$id + '/players/' + $scope.userRecord.playerKey + '/onQuest');
-	currentQuestPlayersGoingRef.on('value', (snap) => {
-		let team = snap.val();
-		if (team) {
-			let teamKeys = Object.keys(team);
-			let teamLength = teamKeys.length;
-
-			teamKeys.forEach(key => {
-				let ref = new Firebase(fb + $scope.game.$id + '/currentQuestPlayersGoing/' + key);
-				ref.once('value', snap => {
-					let teamMember = snap.val();
-					if (teamMember._id === Session.user._id) playerIsOnQuestRef.set(true)
-				});
-			});
-
-			if (teamLength < $scope.game.currentQuestPlayersNeeded) $scope.roomLeftOnTeam = true;
-			else if (teamLength >= $scope.game.currentQuestPlayersNeeded) $scope.roomLeftOnTeam = false;
-
-		} else $scope.roomLeftOnTeam = true;
-	});
-	currentQuestPlayersGoingRef.on('child_removed', (snap) => {
-		let team = snap.val();
-		let teamKeys = Object.keys(team);
-		teamKeys.forEach(key => {
-				let ref = new Firebase(fb + $scope.game.$id + '/currentQuestPlayersGoing/' + key);
-				ref.once('value', (snap) => {
-					let teamMember = snap.val();
-					playerIsOnQuestRef.set(false)
-				});
-			});
-	});
-
-	function tallyVoting (approves, rejects) {
-		if (!$scope.game.players) return; // prevent error on refresh
-		let numberOfPlayers = Object.keys($scope.game.players).length;
-		if ((approves + rejects) === numberOfPlayers) {
-			if (approves > rejects) FbGamesService.goToQuestVoting($scope.game.$id);
-			else FbGamesService.goToNextTurn($scope.game.$id, 'rejectedQuest');
-		}
-	}
-
-	const currentQuestApprovesRef = new Firebase(fb + $scope.game.$id + '/currentQuestApproves');
-	currentQuestApprovesRef.on('value', snap => {
-		let approves = snap.val();
-		let rejects = $scope.game.currentQuestRejects;
-		tallyVoting(approves, rejects);
-	});
-
-	const currentQuestRejectsRef = new Firebase(fb + $scope.game.$id + '/currentQuestRejects');
-	currentQuestRejectsRef.on('value', snap => {
-		let rejects = snap.val();
-		let approves = $scope.game.currentQuestApproves;
-		tallyVoting(approves, rejects);
-	});
-
-	function tallyGrails (successes, fails) {
-		if (!$scope.game.players) return; // prevent error on refresh
-		let questSize = Object.keys($scope.game.currentQuestPlayersGoing).length;
-		if ((successes + fails) === questSize) {
-			if (fails >= $scope.game.currentQuestToFail) FbGamesService.goToQuestResult($scope.game.$id, 'evil');
-			else FbGamesService.goToQuestResult($scope.game.$id, 'good');
-		}
-	}
-
-	const currentQuestSuccessRef = new Firebase(fb + $scope.game.$id + '/currentQuestSuccess');
-	currentQuestSuccessRef.on('value', snap => {
-		let successes = snap.val();
-		let fails = $scope.game.currentQuestFail;
-		tallyGrails(successes, fails);
-	});
-
-	const currentQuestFailRef = new Firebase(fb + $scope.game.$id + '/currentQuestFail');
-	currentQuestFailRef.on('value', snap => {
-		let fails = snap.val();
-		let successes = $scope.game.currentQuestSuccess;
-		tallyGrails(successes, fails);
-	});
-
-	const currentVoteTrackRef = new Firebase(fb + $scope.game.$id + '/currentVoteTrack');
-	const loyalScoreRef = new Firebase(fb + $scope.game.$id + '/loyalScore');
-	const evilScoreRef = new Firebase(fb + $scope.game.$id + '/evilScore');
-	currentVoteTrackRef.on('value', snap => {
-		if (snap.val() === 5) FbGamesService.endGame($scope.game.$id, 'evil');
-	});
-	loyalScoreRef.on('value', snap => {
-		if (snap.val() === 3) FbGamesService.endGame($scope.game.$id, 'good');
-	});
-	evilScoreRef.on('value', snap => {
-		if (snap.val() === 3) FbGamesService.endGame($scope.game.$id, 'evil');
-	});
-
+	FbGamesService.registerListeners($scope.game, $scope.userRecord, $scope);
 
 	$scope.addMessage = () => FbChatService.addChat($scope.chats, author, $scope.newMessage.text);
 	$scope.isHost = () => Session.user._id === $scope.game.host;
@@ -150,4 +51,5 @@ app.controller('RoomCtrl',
 	$scope.addToTeam = (player) => FbGamesService.addToTeam($scope.game.$id, player);
 	$scope.proposeTeam = () => FbGamesService.proposeTeam($scope.game.$id);
 	$scope.resetTeam = () => FbGamesService.resetTeam($scope.game.$id);
+	$scope.guessMerlin = (player) => FbGamesService.guessMerlin($scope.game.$id, player);
 });

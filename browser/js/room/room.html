@@ -10,11 +10,16 @@
 			<img class="character" 
 				 ng-src="{{ player.imageUrl }}"
 				 ng-if="me(player)"/>
-			<a  name="addToTeam"
-				ng-if="myTurn && roomLeftOnTeam && (game.currentGamePhase === 'team building')"
+			<a name="addToTeam"
+				ng-if="myTurn && game.roomLeftOnTeam && (game.currentGamePhase === 'team building')"
 				href="#"
 				ng-click="addToTeam(player)">
 				Add to team</a>
+			<a name="guessMerlin"
+				ng-if="isAssassin && (game.currentGamePhase === 'guess merlin')"
+				href="#"
+				ng-click="guessMerlin(player)">
+				Guess Merlin</a>
 			<img ng-src="/icons/approve.png"
 				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting')"/>
 			<img ng-src="/icons/reject.png"

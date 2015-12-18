@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFactory, UserService) {
+app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFactory, UserService, Session) {
 
 	/*  class Game
 
@@ -94,6 +94,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			currentPlayerTurn: turnOrder[0],
 			currentLadyOfTheLake: turnOrder[turnOrder.length - 1],
 			currentGamePhase: 'team building',
+			roomLeftOnTeam: true,
 			currentTurnIdx: 0,
 			currentVoteTrack: 0,
 			currentQuestIdx: 0,
@@ -207,7 +208,134 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	service.endGame = function (id, result) {
 		let gameRef = new Firebase(fb + id);
 		if (result === 'evil') gameRef.update({ currentGamePhase: 'end - evil wins' });
-		else gameRef.update({ currentGamePhase: 'guess merlin' })
+		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end - evil guessed merlin' });
+		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end - good wins' });
+		else gameRef.update({ currentGamePhase: 'guess merlin' });
 	};
+
+	service.guessMerlin = function (id, player) {
+		let identityRef = new Firebase(fb + id + '/players/' + player.playerKey + '/character');
+		identityRef.once('value', snap => {
+			if (snap.val() === 'merlin') service.endGame(id, 'merlinGuessed');
+			else service.endGame(id, 'merlinNotGuessed');
+		})
+	}
+
+	service.registerListeners = function (game, userRecord, scope) {
+		let gameId = game.$id;
+		let gameRef = new Firebase(fb + gameId);
+
+		const playerRef = new Firebase(fb + gameId + '/players/' + userRecord.playerKey);
+		const characterRef = new Firebase(fb + gameId + '/players/' + userRecord.playerKey + '/character');
+		const currentPlayerTurnRef = new Firebase(fb + gameId + '/currentPlayerTurn');
+		const currentQuestPlayersGoingRef = new Firebase(fb + gameId + '/currentQuestPlayersGoing');
+		const playerIsOnQuestRef = new Firebase(fb + gameId + '/players/' + userRecord.playerKey + '/onQuest');
+		const currentQuestApprovesRef = new Firebase(fb + gameId + '/currentQuestApproves');
+		const currentQuestRejectsRef = new Firebase(fb + gameId + '/currentQuestRejects');
+		const currentQuestSuccessRef = new Firebase(fb + gameId + '/currentQuestSuccess');
+		const currentQuestFailRef = new Firebase(fb + gameId + '/currentQuestFail');
+		const currentVoteTrackRef = new Firebase(fb + gameId + '/currentVoteTrack');
+		const loyalScoreRef = new Firebase(fb + gameId + '/loyalScore');
+		const evilScoreRef = new Firebase(fb + gameId + '/evilScore');
+
+		function tallyVoting (approves, rejects) {
+			if (!game.players) return; // prevent error on refresh
+			let numberOfPlayers = Object.keys(game.players).length;
+			if ((approves + rejects) === numberOfPlayers) {
+				if (approves > rejects) service.goToQuestVoting(gameId);
+				else service.goToNextTurn(gameId, 'rejectedQuest');
+			}
+		}
+		function tallyGrails (successes, fails) {
+			if (!game.players) return; // prevent error on refresh
+			let questSize = Object.keys(game.currentQuestPlayersGoing).length;
+			if ((successes + fails) === questSize) {
+				if (fails >= game.currentQuestToFail) service.goToQuestResult(gameId, 'evil');
+				else service.goToQuestResult(gameId, 'good');
+			}
+		}
+
+		// check if player is the assassin
+		characterRef.on('value', snap => {
+			if (snap.val() === 'assassin') scope.isAssassin = true;
+			else scope.isAssassin = false;
+		});
+
+		// update player turn
+		currentPlayerTurnRef.on('value', snap => {
+			if (snap.val() && (snap.val()._id === Session.user._id)) scope.myTurn = true;
+			else scope.myTurn = false;
+		});
+
+		// update players going on the team
+		currentQuestPlayersGoingRef.on('value', (snap) => {
+			let team = snap.val();
+			if (team) {
+				let teamKeys = Object.keys(team);
+				let teamLength = teamKeys.length;
+
+				teamKeys.forEach(key => {
+					let ref = new Firebase(fb + gameId + '/currentQuestPlayersGoing/' + key);
+					ref.once('value', snap => {
+						let teamMember = snap.val();
+						if (teamMember._id === Session.user._id) playerIsOnQuestRef.set(true)
+					});
+				});
+
+				if (teamLength < game.currentQuestPlayersNeeded) gameRef.update({ roomLeftOnTeam: true });
+				else if (teamLength >= game.currentQuestPlayersNeeded) gameRef.update({ roomLeftOnTeam: false });
+
+			} else gameRef.update({ roomLeftOnTeam: true });
+		});
+		currentQuestPlayersGoingRef.on('child_removed', (snap) => {
+			let team = snap.val();
+			let teamKeys = Object.keys(team);
+			teamKeys.forEach(key => {
+					let ref = new Firebase(fb + gameId + '/currentQuestPlayersGoing/' + key);
+					ref.once('value', (snap) => {
+						let teamMember = snap.val();
+						playerIsOnQuestRef.set(false)
+					});
+				});
+		});
+
+		// track approvals and rejections for teams
+		currentQuestApprovesRef.on('value', snap => {
+			let approves = snap.val();
+			let rejects = game.currentQuestRejects;
+			tallyVoting(approves, rejects);
+		});
+		currentQuestRejectsRef.on('value', snap => {
+			let rejects = snap.val();
+			let approves = game.currentQuestApproves;
+			tallyVoting(approves, rejects);
+		});
+
+		// track success and fail votes for quests
+		currentQuestSuccessRef.on('value', snap => {
+			let successes = snap.val();
+			let fails = game.currentQuestFail;
+			tallyGrails(successes, fails);
+		});
+		currentQuestFailRef.on('value', snap => {
+			let fails = snap.val();
+			let successes = game.currentQuestSuccess;
+			tallyGrails(successes, fails);
+		});
+
+		// track end game conditions
+		currentVoteTrackRef.on('value', snap => {
+			if (snap.val() === 5) service.endGame(gameId, 'evil');
+		});
+		loyalScoreRef.on('value', snap => {
+			if (snap.val() === 3) service.endGame(gameId, 'good');
+		});
+		evilScoreRef.on('value', snap => {
+			if (snap.val() === 3) service.endGame(gameId, 'evil');
+		});
+	};
+
+	//CURRENTLY: GAME DOESN'T END - PROBABLY BECAUSE OF A RACE CONDITION WHEN
+	//CHANGING TO THE NEXT TURN. FIX
 
 });

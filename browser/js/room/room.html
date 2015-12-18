@@ -22,19 +22,27 @@
 		</div>
 	</div>
 
-	<div class="well" id="chat">
-		<p>Me: {{ user.displayName }}</p>
-		<p>Turn: {{ game.currentPlayerTurn.displayName }}</p>
-		<p>Team:</p>
+	<!-- test box -->
+	<div class="well" id="test">
+		<span>Me: {{ user.displayName }}</span>
+		<span>Turn: {{ game.currentPlayerTurn.displayName }}</span>
+		<span>Team:</span>
 			<ul>
 				<li ng-repeat="p in game.currentQuestPlayersGoing">
 					{{p.displayName}}
 				</li>
 			</ul>
-		<p>On quest?: {{ user.onQuest }}</p>
-		<p>Approved?: {{ user.approvedQuest }}
-		<p>Vote Track: {{ game.currentVoteTrack }}</p>
-		<p>Phase: {{ game.currentGamePhase }}</p>
+		<span>Quest #: {{ game.currentQuestIdx + 1 }}</span>
+		<span>Players Needed: {{ game.currentQuestPlayersNeeded }}</span>
+		<span>To fail: {{ game.currentQuestToFail }}</span>
+		<span>On quest?: {{ user.onQuest }}</span>
+		<span>Approved?: {{ user.approvedQuest }}
+		<span>Vote Track: {{ game.currentVoteTrack }}</span>
+		<span>Phase: {{ game.currentGamePhase }}</span>
+		<span>Loyal Score: {{ game.loyalScore }}</span>
+		<span>Evil Score: {{ game.evilScore }}</span>
+		<span>Team Approves: {{ game.currentQuestApproves }}</span>
+		<span>Team Rejects: {{ game.currentQuestRejects }}</span>
 	</div>
 
 	<div class="well" id="chat">

@@ -105,20 +105,18 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			currentQuestSuccess: 0,
 			currentQuestFail: 0
 		});
-
-		console.log(game)
 	};
 
 	service.approveTeam = function (id, playerKey) {
 		let approveRef = new Firebase(fb + id + '/currentQuestApproves');
-		let playerRef = new Firebase(fb + '/players/' + playerKey + '/approvedQuest');
+		let playerRef = new Firebase(fb + id + '/players/' + playerKey + '/approvedQuest');
 		approveRef.transaction(currentVal => (currentVal + 1));
 		playerRef.set(true);
 	};
 
 	service.rejectTeam = function (id, playerKey) {
 		let rejectRef = new Firebase(fb + id + '/currentQuestRejects');
-		let playerRef = new Firebase(fb + '/players/' + playerKey + '/approvedQuest');
+		let playerRef = new Firebase(fb + id + '/players/' + playerKey + '/approvedQuest');
 		rejectRef.transaction(currentVal => (currentVal + 1));
 		playerRef.set(false);
 	};
@@ -135,7 +133,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.addToTeam = function (id, player) {
 		let teamRef = new Firebase(fb + id + '/currentQuestPlayersGoing');
-		let playerQuestKeyRef = new Firebase(fb + id + '/players/' + player.playerKey + '/questKey');
 		let newTeamMemberRef = teamRef.push();
 		newTeamMemberRef.set(player);
 	};
@@ -153,7 +150,64 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	service.goToQuestVoting = function (id) {
 		let ref = new Firebase(fb + id + '/currentGamePhase');
 		ref.set('quest voting');
+	};
 
-	}
+	service.goToQuestResult = function (id, result) {
+		let phaseRef = new Firebase(fb + id + '/currentGamePhase');
+		let loyalScoreRef = new Firebase(fb + id + '/loyalScore');
+		let evilScoreRef = new Firebase(fb + id + '/evilScore');
+		phaseRef.set('quest result');
+		if (result === 'evil') evilScoreRef.transaction(currentVal => (currentVal + 1));
+		else loyalScoreRef.transaction(currentVal => (currentVal + 1));
+		service.goToNextQuest(id);
+		service.goToNextTurn(id);
+	};
+
+	service.goToNextQuest = function (id) {
+		let gameRef = new Firebase(fb + id);
+		gameRef.once('value', snap => {
+			let game = snap.val();
+			let newIdx = game.currentQuestIdx + 1;
+			if (game.currentQuestIdx <= 5) {
+				gameRef.update({
+					currentVoteTrack: 0,
+					currentQuestIdx: newIdx,
+					currentQuestPlayersNeeded: game.quests[newIdx].playersNeeded,
+					currentQuestPlayersGoing: null,
+					currentQuestToFail: game.quests[newIdx].toFail,
+					currentQuestApproves: 0,
+					currentQuestRejects: 0,
+					currentQuestSuccess: 0,
+					currentQuestFail: 0
+				});
+			} else game.update({ currentQuestIdx: newIdx });
+		});
+	};
+
+	service.goToNextTurn = function (id, rejectedQuest) {
+		let gameRef = new Firebase(fb + id);
+		let currentVoteTrackRef = new Firebase(fb + id + '/currentVoteTrack');
+		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => (currentVal + 1));
+		gameRef.once('value', snap => {
+			let game = snap.val();
+			let newIdx = game.currentTurnIdx + 1;
+			let numberOfPlayers = Object.keys(game.players).length;
+			if (newIdx > numberOfPlayers) newIdx = 0;
+			gameRef.update({
+				currentGamePhase: 'team building',
+				currentTurnIdx: newIdx,
+				currentQuestPlayersGoing: null,
+				currentQuestApproves: 0,
+				currentQuestRejects: 0,
+				currentPlayerTurn: game.turnOrder[newIdx]
+			});
+		});
+	};
+
+	service.endGame = function (id, result) {
+		let gameRef = new Firebase(fb + id);
+		if (result === 'evil') gameRef.update({ currentGamePhase: 'end - evil wins' });
+		else gameRef.update({ currentGamePhase: 'guess merlin' })
+	};
 
 });

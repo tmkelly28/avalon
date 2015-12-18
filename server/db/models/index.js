@@ -2,7 +2,4 @@
 // so the rest of the application can simply call mongoose.model('User')
 // anywhere the User model needs to be used.
 require('./user');
-require('./game');
-require('./player');
 require('./statistics');
-require('./quest');

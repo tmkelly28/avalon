@@ -37,12 +37,14 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		currentTurnIdx: Number,
 		currentQuestIdx: Number,
 		currentQuestPlayersNeeded: Number,
-		currentQuestPlayersGoing: player{}[]
+		currentQuestPlayersGoing: players{}
 		currentQuestToFail: Number,
 		currentQuestApproves: Number,
 		currentQuestRejects: Number,
 		currentQuestSuccess: Number,
 		currentQuestFail: Number,
+		previousQuestSuccess: Number,
+		previousQuestFail: Number
 		merlinGuess: player{}					
 	*/
 
@@ -160,7 +162,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		ref.set('quest voting');
 	};
 
-	service.goToQuestResult = function (id, result) {
+	service.goToQuestResult = function (id, result, scope) {
 		let phaseRef = new Firebase(fb + id + '/currentGamePhase');
 		let loyalScoreRef = new Firebase(fb + id + '/loyalScore');
 		let evilScoreRef = new Firebase(fb + id + '/evilScore');
@@ -172,7 +174,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					service.endGame(id, 'evil');
 				} else {
 					service.goToNextQuest(id, 'fail');
-					service.goToNextTurn(id);					
+					service.goToNextTurn(id, null, scope);					
 				}
 			});
 		} else {
@@ -182,7 +184,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					service.endGame(id, 'good');
 				} else {
 					service.goToNextQuest(id, 'success');
-					service.goToNextTurn(id);
+					service.goToNextTurn(id, null, scope);
 				}
 			});
 		}
@@ -210,13 +212,15 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					currentQuestApproves: 0,
 					currentQuestRejects: 0,
 					currentQuestSuccess: 0,
-					currentQuestFail: 0
+					currentQuestFail: 0,
+					previousQuestSuccess: game.currentQuestSuccess,
+					previousQuestFail: game.currentQuestFail
 				});
 			} else game.update({ currentQuestIdx: newIdx });
 		});
 	};
 
-	service.goToNextTurn = function (id, rejectedQuest) {
+	service.goToNextTurn = function (id, rejectedQuest, scope) {
 		let gameRef = new Firebase(fb + id);
 		let currentVoteTrackRef = new Firebase(fb + id + '/currentVoteTrack');
 		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => (currentVal + 1));
@@ -234,6 +238,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				currentPlayerTurn: game.turnOrder[newIdx]
 			});
 		});
+		scope.needToVoteForTeam = true;
+		scope.needToVoteOnQuest = true;
 	};
 
 	service.endGame = function (id, result) {
@@ -269,15 +275,15 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let numberOfPlayers = Object.keys(game.players).length;
 			if ((approves + rejects) === numberOfPlayers) {
 				if (approves > rejects) service.goToQuestVoting(gameId);
-				else service.goToNextTurn(gameId, 'rejectedQuest');
+				else service.goToNextTurn(gameId, 'rejectedQuest', scope);
 			}
 		}
 		function tallyGrails (successes, fails) {
 			if (!game.currentQuestPlayersGoing) return; // prevent error on refresh
 			let questSize = Object.keys(game.currentQuestPlayersGoing).length;
 			if ((successes + fails) === questSize) {
-				if (fails >= game.currentQuestToFail) service.goToQuestResult(gameId, 'evil');
-				else service.goToQuestResult(gameId, 'good');
+				if (fails >= game.currentQuestToFail) service.goToQuestResult(gameId, 'evil', scope);
+				else service.goToQuestResult(gameId, 'good', scope);
 			}
 		}
 

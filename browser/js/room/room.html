@@ -16,10 +16,10 @@
 				 ng-if="me(player)"/>
 
 			<img ng-src="/icons/approve.png"
-				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
+				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building') && (game.currentQuestIdx !== 0 || game.currentGamePhase === 'quest voting')"
 				 class="voteToken"/>
 			<img ng-src="/icons/reject.png"
-				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
+				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building') && (game.currentQuestIdx !== 0 || game.currentGamePhase === 'quest voting')"
 				 class="voteToken"/>
 			<img ng-src="/icons/sigil.png"
 				 ng-if="player.onQuest"
@@ -54,6 +54,22 @@
 				<span ng-if="quest.toFail > 1">(2 fails)</span>
 			</span>
 		</div>
+		<div id="voteTrack">
+			<img ng-src="" />
+			Vote Track:
+		{{ game.currentVoteTrack }}
+		</div>
+	</div>
+
+	<div id="questResult">
+		<span ng-repeat="n in range(0, game.previousQuestSuccess)">
+			<img class="grail" 
+			    ng-src="/icons/success.png" />
+		</span>
+		<span ng-repeat="n in range(0, game.previousQuestFail)">
+			<img class="grail" 
+				ng-src="/icons/fail.png" />
+		</span>
 	</div>
 
  	<!-- Game Log -->
@@ -77,6 +93,8 @@
  			</span>
  		</p>
  	</div>
+
+ 	<!-- Chat History -->
 	<div class="well" id="chat">
 		<p ng-repeat="chat in chats | orderBy:'-'">{{ chat.text }}</p>
 	</div>
@@ -94,41 +112,44 @@
 			<a 
 				class="btn btn-default"  
 			    ng-click="voteApprove()"
-			    ng-if="game.currentGamePhase === 'team voting'">
+			    ng-if="(game.currentGamePhase === 'team voting') && needToVoteForTeam">
 			    Approve
 			</a>
 			<a 
 				class="btn btn-default"  
 			    ng-click="voteReject()"
-			    ng-if="game.currentGamePhase === 'team voting'">
+			    ng-if="(game.currentGamePhase === 'team voting') && needToVoteForTeam">
 			    Reject
 			</a>
 			<a 
 				class="btn btn-default"  
 			    ng-click="successQuest()"
-			    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest">
+			    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && needToVoteOnQuest">
 			    Success
 			</a>
 			<a 
 				class="btn btn-default"  
 			    ng-click="failQuest()"
-			    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest">
+			    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && needToVoteOnQuest">
 			    Fail
 			</a>
-			<a 
+			<button 
 				class="btn btn-default"  
 			    ng-click="proposeTeam()"
+			    ng-disabled="disablePropose(game)"
 			    ng-if="myTurn && (game.currentGamePhase === 'team building')">
 			    Propose Team
-			</a>
+			</button>
 			<a 
 				class="btn btn-default"
-				ng-if="myTurn && (game.currentGamePhase === 'team building')"  
+				ng-if="myTurn && (game.currentGamePhase === 'team building')"
 			    ng-click="resetTeam()">
 			    Reset Team
 			</a>
 		</form>
 	</div>
+
+	{{ game.loyalScore }}
 
 	<!-- Chat Entry -->
 	<div id="chatEntry">

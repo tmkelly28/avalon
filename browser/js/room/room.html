@@ -13,7 +13,7 @@
 
 			<img class="character" 
 				 ng-src="{{ player.imageUrl }}"
-				 ng-if="me(player)"/>
+				 ng-if="me(player) || (game.currentGamePhase.slice(0, 3) === 'end') || (game.currentGamePhase === 'guess merlin' && player.loyalty === 'evil' && player.character !== 'Oberon')"/>
 
 			<img ng-src="/icons/approve.png"
 				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
@@ -117,8 +117,9 @@
 		<form>
 			<button 
 				class="btn btn-success" 
-			    ng-disabled="!ableToBegin()" 
+			    ng-disabled="!ableToBegin()"
 			    ng-if="isHost()"
+			    ng-hide="!game.waitingToPlay"
 			    ng-click="startGame()">
 			    Begin Game
 			</button>

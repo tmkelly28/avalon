@@ -276,12 +276,18 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	service.endGame = function (id, result) {
 
 		console.log('checking the end game condition')
+		console.log('the result is', result)
 
 		let gameRef = new Firebase(fb + id);
-		if (result === 'evil') gameRef.update({ currentGamePhase: 'end - evil wins' });
-		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end - evil guessed merlin' });
-		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end - good wins' });
+		if (result === 'evil') gameRef.update({ currentGamePhase: 'end evil wins' });
+		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end evil guessed merlin' });
+		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end good wins' });
 		else gameRef.update({ currentGamePhase: 'guess merlin' });
+
+		console.log('game has ended, leaving the endGame function')
+		gameRef.once('value', snap => {
+			console.log('checking the game end value', snap.val())
+		})
 	};
 
 	service.guessMerlin = function (id, player) {

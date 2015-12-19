@@ -16,10 +16,12 @@
 				 ng-if="me(player)"/>
 
 			<img ng-src="/icons/approve.png"
-				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building') && (game.currentQuestIdx !== 0 || game.currentGamePhase === 'quest voting')"
+				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
+				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0)"
 				 class="voteToken"/>
 			<img ng-src="/icons/reject.png"
-				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building') && (game.currentQuestIdx !== 0 || game.currentGamePhase === 'quest voting')"
+				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
+				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0)"
 				 class="voteToken"/>
 			<img ng-src="/icons/lady_of_the_lake.png"
 				 ng-if="game.currentLadyOfTheLake._id === player._id"
@@ -71,7 +73,8 @@
 		</div>
 	</div>
 
-	<div id="questResult">
+	<!-- Grails -->
+	<div id="questResult" ng-if="game.currentGamePhase !== 'team voting' || game.currentGamePhase !== 'quest voting'">
 		<span ng-repeat="n in range(0, game.previousQuestSuccess)">
 			<img class="grail" 
 			    ng-src="/icons/success.png" />
@@ -161,9 +164,9 @@
 
 	<div id="gameResult">
 		<alert ng-if="game.currentGamePhase==='guess merlin'">Good has prevailed, but now evil may guess Merlin</alert>
-		<alert ng-if="game.currentGamePhase==='end - evil wins'">Evil wins!</alert>
-		<alert ng-if="game.currentGamePhase==='end - good wins'">Good wins!</alert>
-		<alert ng-if="game.currentGamePhase==='end - evil guessed merlin'">Evil Guessed Merlin! Evil Wins</alert>
+		<alert ng-if="game.currentGamePhase==='end evil wins'">Evil wins!</alert>
+		<alert ng-if="game.currentGamePhase==='end good wins'">Good wins!</alert>
+		<alert ng-if="game.currentGamePhase==='end evil guessed merlin'">Evil Guessed Merlin! Evil Wins</alert>
 	</div>
 
 	<!-- Chat Entry -->

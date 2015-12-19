@@ -70,4 +70,5 @@ app.controller('RoomCtrl',
 		else return game.currentQuestPlayersNeeded !== Object.keys(game.currentQuestPlayersGoing).length;
 	};
 	$scope.range = (n, m) => _.range(n, m);
+	$scope.useLady = (player) => FbGamesService.useLady($scope.game.$id, player);
 });

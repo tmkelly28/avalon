@@ -21,6 +21,9 @@
 			<img ng-src="/icons/reject.png"
 				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building') && (game.currentQuestIdx !== 0 || game.currentGamePhase === 'quest voting')"
 				 class="voteToken"/>
+			<img ng-src="/icons/lady_of_the_lake.png"
+				 ng-if="game.currentLadyOfTheLake._id === player._id"
+				 class="voteToken"/>	 
 			<img ng-src="/icons/sigil.png"
 				 ng-if="player.onQuest"
 				 class="sigil"/>
@@ -39,6 +42,13 @@
 					class="selectPlayer"
 					ng-click="guessMerlin(player)">
 					Guess Merlin</a>
+				<a name="useLady"
+					ng-if="(user._id === game.currentLadyOfTheLake._id) && (game.currentGamePhase === 'using lady') && (!player.hasBeenLadyOfTheLake) && (player._id !== user._id)"
+					href="#"
+					class="selectPlayer"
+					ng-click="useLady(player)">
+					<span class="glyphicon glyphicon-eye-open"></span>
+					Use Lady Of the Lake</a>	
 			</div>
 		</div>
 
@@ -102,13 +112,13 @@
 	<!-- Button Bar -->
 	<div id="buttonBar">
 		<form>
-			<a 
+			<button 
 				class="btn btn-success" 
 			    ng-disabled="!ableToBegin()" 
 			    ng-if="isHost()"
 			    ng-click="startGame()">
 			    Begin Game
-			</a>
+			</button>
 			<a 
 				class="btn btn-default"  
 			    ng-click="voteApprove()"
@@ -149,7 +159,12 @@
 		</form>
 	</div>
 
-	{{ game.loyalScore }}
+	<div id="gameResult">
+		<alert ng-if="game.currentGamePhase==='guess merlin'">Good has prevailed, but now evil may guess Merlin</alert>
+		<alert ng-if="game.currentGamePhase==='end - evil wins'">Evil wins!</alert>
+		<alert ng-if="game.currentGamePhase==='end - good wins'">Good wins!</alert>
+		<alert ng-if="game.currentGamePhase==='end - evil guessed merlin'">Evil Guessed Merlin! Evil Wins</alert>
+	</div>
 
 	<!-- Chat Entry -->
 	<div id="chatEntry">

@@ -13,6 +13,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			loyalty: String ['good', 'evil'],
 			character: String enum:['Servant of Arthur', 'Minion of Mordred', etc]
 			onQuest: boolean
+			hasBeenLadyOfTheLake: boolean
 		usePercival: Boolean,
 		useMorgana: Boolean,
 		useOberon: Boolean,
@@ -93,6 +94,9 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		let quests = GameFactory.assignQuests(game);
 		GameFactory.assignPlayerRoles(game);
 		let turnOrder = _.shuffle(game.players);
+		let lady;
+		if (game.useLady) lady = turnOrder[turnOrder.length - 1];
+		else lady = null;
 
 		gameRef.update({
 			waitingToPlay: false,
@@ -101,7 +105,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			loyalScore: 0,
 			evilScore: 0,
 			currentPlayerTurn: turnOrder[0],
-			currentLadyOfTheLake: turnOrder[turnOrder.length - 1],
+			currentLadyOfTheLake: lady,
 			currentGamePhase: 'team building',
 			roomLeftOnTeam: true,
 			currentTurnIdx: 0,
@@ -171,9 +175,18 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			evilScoreRef.transaction(currentVal => (currentVal + 1));
 			evilScoreRef.once('value', snap => {
 				if (snap.val() === 3) {
+
+					console.log('in the evil win condition')
+					
 					service.endGame(id, 'evil');
 				} else {
+
+					console.log('about to go to next quest')
+
 					service.goToNextQuest(id, 'fail');
+
+					console.log('about to go to the next turn')
+
 					service.goToNextTurn(id, null, scope);					
 				}
 			});
@@ -181,9 +194,18 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			loyalScoreRef.transaction(currentVal => (currentVal + 1));
 			loyalScoreRef.once('value', snap => {
 				if (snap.val() === 3) {
+
+					console.log('in the good win condition')
+
 					service.endGame(id, 'good');
 				} else {
+
+					console.log('about to go to next quest')
+
 					service.goToNextQuest(id, 'success');
+
+					console.log('about to go to the next turn')
+
 					service.goToNextTurn(id, null, scope);
 				}
 			});
@@ -198,11 +220,17 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let oldIdx = game.currentQuestIdx;
 			let newIdx = game.currentQuestIdx + 1;
 			questRef.once('value', snapshot => {
+
+				console.log('changing the quest idx')
+
 				let questArray = snapshot.val();
 				questArray[oldIdx].status = prevQuestStatus;
 				questRef.set(questArray);
 			});
-			if (game.currentQuestIdx <= 5) {
+			if (game.currentQuestIdx < 5) {
+
+				console.log('updating the quest asyncronously')
+
 				gameRef.update({
 					currentVoteTrack: 0,
 					currentQuestIdx: newIdx,
@@ -216,7 +244,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					previousQuestSuccess: game.currentQuestSuccess,
 					previousQuestFail: game.currentQuestFail
 				});
-			} else game.update({ currentQuestIdx: newIdx });
+			} else console.log('Something has gone horribly wrong');
 		});
 	};
 
@@ -229,6 +257,9 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let newIdx = game.currentTurnIdx + 1;
 			let numberOfPlayers = Object.keys(game.players).length;
 			if (newIdx > numberOfPlayers) newIdx = 0;
+
+			console.log('updating the turn asyncronously')
+
 			gameRef.update({
 				currentGamePhase: 'team building',
 				currentTurnIdx: newIdx,
@@ -243,6 +274,9 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.endGame = function (id, result) {
+
+		console.log('checking the end game condition')
+
 		let gameRef = new Firebase(fb + id);
 		if (result === 'evil') gameRef.update({ currentGamePhase: 'end - evil wins' });
 		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end - evil guessed merlin' });

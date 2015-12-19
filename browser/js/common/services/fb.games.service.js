@@ -167,45 +167,23 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.goToQuestResult = function (id, result, scope) {
-		let phaseRef = new Firebase(fb + id + '/currentGamePhase');
 		let loyalScoreRef = new Firebase(fb + id + '/loyalScore');
 		let evilScoreRef = new Firebase(fb + id + '/evilScore');
-		phaseRef.set('quest result');
 		if (result === 'evil') {
 			evilScoreRef.transaction(currentVal => (currentVal + 1));
 			evilScoreRef.once('value', snap => {
-				if (snap.val() === 3) {
-
-					console.log('in the evil win condition')
-					
-					service.endGame(id, 'evil');
-				} else {
-
-					console.log('about to go to next quest')
-
+				if (snap.val() === 3) return;
+				else {
 					service.goToNextQuest(id, 'fail');
-
-					console.log('about to go to the next turn')
-
 					service.goToNextTurn(id, null, scope);					
 				}
 			});
 		} else {
 			loyalScoreRef.transaction(currentVal => (currentVal + 1));
 			loyalScoreRef.once('value', snap => {
-				if (snap.val() === 3) {
-
-					console.log('in the good win condition')
-
-					service.endGame(id, 'good');
-				} else {
-
-					console.log('about to go to next quest')
-
+				if (snap.val() === 3) return;
+				else {
 					service.goToNextQuest(id, 'success');
-
-					console.log('about to go to the next turn')
-
 					service.goToNextTurn(id, null, scope);
 				}
 			});
@@ -220,16 +198,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let oldIdx = game.currentQuestIdx;
 			let newIdx = game.currentQuestIdx + 1;
 			questRef.once('value', snapshot => {
-
-				console.log('changing the quest idx')
-
 				let questArray = snapshot.val();
 				questArray[oldIdx].status = prevQuestStatus;
 				questRef.set(questArray);
 			});
 			if (game.currentQuestIdx < 5) {
-
-				console.log('updating the quest asyncronously')
 
 				gameRef.update({
 					currentVoteTrack: 0,
@@ -244,7 +217,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					previousQuestSuccess: game.currentQuestSuccess,
 					previousQuestFail: game.currentQuestFail
 				});
-			} else console.log('Something has gone horribly wrong');
+			} // score listener should take over otherwise
 		});
 	};
 
@@ -257,8 +230,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let newIdx = game.currentTurnIdx + 1;
 			let numberOfPlayers = Object.keys(game.players).length;
 			if (newIdx > numberOfPlayers) newIdx = 0;
-
-			console.log('updating the turn asyncronously')
 
 			gameRef.update({
 				currentGamePhase: 'team building',
@@ -274,20 +245,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.endGame = function (id, result) {
-
-		console.log('checking the end game condition')
-		console.log('the result is', result)
-
 		let gameRef = new Firebase(fb + id);
 		if (result === 'evil') gameRef.update({ currentGamePhase: 'end evil wins' });
 		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end evil guessed merlin' });
 		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end good wins' });
-		else gameRef.update({ currentGamePhase: 'guess merlin' });
-
-		console.log('game has ended, leaving the endGame function')
-		gameRef.once('value', snap => {
-			console.log('checking the game end value', snap.val())
-		})
+		else gameRef.update({ currentGamePhase: 'guess merlin' });		
 	};
 
 	service.guessMerlin = function (id, player) {
@@ -309,6 +271,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		const currentQuestSuccessRef = new Firebase(fb + gameId + '/currentQuestSuccess');
 		const currentQuestFailRef = new Firebase(fb + gameId + '/currentQuestFail');
 		const currentVoteTrackRef = new Firebase(fb + gameId + '/currentVoteTrack');
+		const loyalScoreRef = new Firebase(fb + gameId + '/loyalScore');
+		const evilScoreRef = new Firebase(fb + gameId + '/evilScore');
 
 		function tallyVoting (approves, rejects) {
 			if (!game.players) return; // prevent error on refresh
@@ -391,6 +355,12 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		// track end game conditions
 		currentVoteTrackRef.on('value', snap => {
 			if (snap.val() === 5) service.endGame(gameId, 'evil');
+		});
+		loyalScoreRef.on('value', snap => {
+			if (snap.val() === 3) service.endGame(gameId, 'good');
+		});
+		evilScoreRef.on('value', snap => {
+			if (snap.val() === 3) service.endGame(gameId, 'evil');
 		});
 	};
 

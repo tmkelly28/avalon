@@ -17,11 +17,11 @@
 
 			<img ng-src="/icons/approve.png"
 				 ng-if="player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
-				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0)"
+				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0 && game.currentGamePhase === 'team building')"
 				 class="voteToken"/>
 			<img ng-src="/icons/reject.png"
 				 ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
-				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0)"
+				 ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0) && game.currentGamePhase === 'team building'"
 				 class="voteToken"/>
 			<img ng-src="/icons/lady_of_the_lake.png"
 				 ng-if="game.currentLadyOfTheLake._id === player._id"
@@ -74,7 +74,7 @@
 	</div>
 
 	<!-- Grails -->
-	<div id="questResult" ng-if="game.currentGamePhase !== 'team voting' || game.currentGamePhase !== 'quest voting'">
+	<div id="questResult" ng-hide="game.currentGamePhase === 'team voting' || game.currentGamePhase === 'quest voting'">
 		<span ng-repeat="n in range(0, game.previousQuestSuccess)">
 			<img class="grail" 
 			    ng-src="/icons/success.png" />

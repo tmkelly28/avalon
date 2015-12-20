@@ -50,7 +50,7 @@
 					class="selectPlayer"
 					ng-click="useLady(player)">
 					<span class="glyphicon glyphicon-eye-open"></span>
-					Use Lady Of the Lake</a>	
+					Use Lady of the Lake</a>	
 			</div>
 		</div>
 
@@ -105,6 +105,10 @@
  				{{ player.displayName }} is an agent of evil
  			</span>
  		</p>
+ 		<p ng-if="investigatedPlayer">
+			<span class="glyphicon glyphicon-eye-open"></span>
+			{{ investigatedPlayer.displayName }} is {{ investigatedPlayer.loyalty }}
+		<p>
  	</div>
 
  	<!-- Chat History -->

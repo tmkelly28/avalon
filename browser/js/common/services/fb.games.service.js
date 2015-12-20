@@ -70,12 +70,17 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.addPlayerToGame = function (gameKey, player) {
 		let playersRef = new Firebase(fb + gameKey + "/players");
-		return new Promise(resolve => {
+		return new Promise((resolve, reject) => {
 			let ref = playersRef.push();
-			ref.set(player);
-			resolve(ref.key());
-		})
-		.then(playerKey => UserService.update(player._id, { playerKey: playerKey }))
+			let key = ref.key();
+
+			UserService.update(player._id, { playerKey: key })
+			.then(player => {
+				ref.set(player);
+				resolve(key);
+			})
+			.then(null, err => reject(err));
+		})		
 		.then(null, err => console.error(err));
 	};
 
@@ -231,8 +236,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let numberOfPlayers = Object.keys(game.players).length;
 			if (newIdx > numberOfPlayers) newIdx = 0;
 
+			let nextPhase = 'team building';
+			if (game.useLady && (game.currentQuestIdx > 1 && game.currentQuestIdx < 5)) nextPhase = 'using lady';
+
 			gameRef.update({
-				currentGamePhase: 'team building',
+				currentGamePhase: nextPhase,
 				currentTurnIdx: newIdx,
 				currentQuestPlayersGoing: null,
 				currentQuestApproves: 0,
@@ -240,6 +248,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				currentPlayerTurn: game.turnOrder[newIdx]
 			});
 		});
+
 		scope.needToVoteForTeam = true;
 		scope.needToVoteOnQuest = true;
 	};
@@ -258,7 +267,23 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			if (snap.val() === 'merlin') service.endGame(id, 'merlinGuessed');
 			else service.endGame(id, 'merlinNotGuessed');
 		})
-	}
+	};
+
+	service.useLady = function (id, player) {
+		let gameRef = new Firebase(fb + id);
+		let playerRef = new Firebase(fb + id + '/players/' + player.playerKey);
+		let playerHasBeenLadyRef = new Firebase(fb + id + '/players/' + player.playerKey + '/hasBeenLadyOfTheLake');
+		
+		playerRef.once('value', snap => {
+			let newLady = snap.val();
+
+			playerHasBeenLadyRef.set(true);
+			gameRef.update({
+				currentLadyOfTheLake: player,
+				currentGamePhase: 'team building'
+			});
+		});
+	};
 
 	service.registerListeners = function (game, userRecord, scope) {
 		const gameId = game.$id;

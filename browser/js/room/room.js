@@ -37,6 +37,7 @@ app.controller('RoomCtrl',
 	$scope.myTurn = false;
 	$scope.needToVoteForTeam = true;
 	$scope.needToVoteOnQuest = true;
+	$scope.investigatedPlayer = null;
 
 	FbGamesService.registerListeners($scope.game, $scope.userRecord, $scope);
 
@@ -73,5 +74,12 @@ app.controller('RoomCtrl',
 		else return game.currentQuestPlayersNeeded !== Object.keys(game.currentQuestPlayersGoing).length;
 	};
 	$scope.range = (n, m) => _.range(n, m);
-	$scope.useLady = (player) => FbGamesService.useLady($scope.game.$id, player);
+	$scope.useLady = (player) => {
+		// this won't persist after refresh
+		$scope.investigatedPlayer = {
+			loyalty: player.loyalty,
+			displayName: player.displayName
+		}
+		FbGamesService.useLady($scope.game.$id, player)
+	};
 });

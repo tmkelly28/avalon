@@ -69,9 +69,9 @@ app.controller('RoomCtrl',
 	$scope.proposeTeam = () => FbGamesService.proposeTeam($scope.game.$id);
 	$scope.resetTeam = () => FbGamesService.resetTeam($scope.game.$id);
 	$scope.guessMerlin = (player) => FbGamesService.guessMerlin($scope.game.$id, player);
-	$scope.disablePropose = (game) => {
-		if (!game.currentQuestPlayersGoing) return true;
-		else return game.currentQuestPlayersNeeded !== Object.keys(game.currentQuestPlayersGoing).length;
+	$scope.disablePropose = () => {
+		if (!$scope.game.currentQuestPlayersGoing) return true;
+		else return $scope.game.currentQuestPlayersNeeded !== Object.keys($scope.game.currentQuestPlayersGoing).length;
 	};
 	$scope.range = (n, m) => _.range(n, m);
 	$scope.useLady = (player) => {

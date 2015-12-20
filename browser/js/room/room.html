@@ -85,7 +85,7 @@
 		</span>
 	</div>
 
- 	<!-- Game Log -->
+ 	<!-- Private Game Log -->
  	<div class="well" id="gamelog">
  		<p ng-repeat="player in game.players">
  			<span ng-if="(user.character==='Percival') && (player.character==='Morgana')">
@@ -154,7 +154,7 @@
 			<button 
 				class="btn btn-default"  
 			    ng-click="proposeTeam()"
-			    ng-disabled="disablePropose(game)"
+			    ng-disabled="disablePropose()"
 			    ng-if="myTurn && (game.currentGamePhase === 'team building')">
 			    Propose Team
 			</button>
@@ -167,6 +167,7 @@
 		</form>
 	</div>
 
+	<!-- Game Result -->
 	<div id="gameResult">
 		<alert ng-if="game.currentGamePhase==='guess merlin'">Good has prevailed, but now evil may guess Merlin</alert>
 		<alert ng-if="game.currentGamePhase==='end evil wins'">Evil wins!</alert>
@@ -192,4 +193,5 @@
 			</input>
 		</form>
 	</div>
+
 </section>

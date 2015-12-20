@@ -75,8 +75,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let key = ref.key();
 
 			UserService.update(player._id, { playerKey: key })
-			.then(player => {
-				ref.set(player);
+			.then(updatedPlayer => {
+				ref.set(updatedPlayer);
 				resolve(key);
 			})
 			.then(null, err => reject(err));
@@ -275,17 +275,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.useLady = function (id, player) {
 		let gameRef = new Firebase(fb + id);
-		let playerRef = new Firebase(fb + id + '/players/' + player.playerKey);
 		let playerHasBeenLadyRef = new Firebase(fb + id + '/players/' + player.playerKey + '/hasBeenLadyOfTheLake');
-		
-		playerRef.once('value', snap => {
-			let newLady = snap.val();
-
-			playerHasBeenLadyRef.set(true);
-			gameRef.update({
-				currentLadyOfTheLake: player,
-				currentGamePhase: 'team building'
-			});
+		playerHasBeenLadyRef.set(true);
+		gameRef.update({
+			currentLadyOfTheLake: player,
+			currentGamePhase: 'team building'
 		});
 	};
 

@@ -1,7 +1,19 @@
 #home {
+
  	h1 {
 		margin-top: 40px;
 		text-align: center;
+		font-size: 72px;
+	}
+
+	input {
+		margin: 5px;
+	}
+
+	button {
+		display: block !important;
+		text-align: center;
+		margin: 0 auto;
 	}
 }
 

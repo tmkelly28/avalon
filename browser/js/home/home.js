@@ -9,7 +9,7 @@ app.config(function ($stateProvider) {
     });
 });
 
-app.controller('HomeCtrl', function ($scope, $rootScope, $state, Session, AUTH_EVENTS, UserService, AuthService) {
+app.controller('HomeCtrl', function ($scope, $state, UserService, AuthService) {
 
 	function proceedToLobby (user) {
 		$state.go('lobby', {

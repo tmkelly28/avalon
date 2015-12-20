@@ -1,6 +1,5 @@
 <section id="user">
-	<h1>U s e r</h1>
-	<p>{{ user.displayName }}</p>
+	<h1>{{ user.displayName.split("").join(" ") }}</h1>
 	<img ng-src="{{user.picture}}" />
 	<table class="table table-hover">
     	<thead>

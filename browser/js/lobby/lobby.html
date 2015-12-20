@@ -1,6 +1,5 @@
 <section id="lobby">
-    <h1>L o b b y</h1>
-    <h3>{{ user.displayName }}</h3>
+    <h1>{{ user.displayName.split("").join(" ") }}</h1>
     <img ng-src="{{user.picture}}" />
     <a href="#" class="btn btn-default" ng-click="openNewGameModal()">Create New Room</a>
     <a ui-sref="user({uid:user._id})" class="btn btn-default">Your User Stats</a>

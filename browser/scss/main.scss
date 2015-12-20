@@ -4,11 +4,33 @@
 
 body {
   background: #fdfdfd;
-  // background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/af/Stone%2C_wall%2C_textura.jpg');
-  // background-repeat: no-repeat;
-  // background-position: center;
-  font-family: 'Nunito', sans-serif;
-  // font-family: 'Julius Sans One', sans-serif;
+  font-family: 'Julius Sans One', sans-serif;
+  color: #E7C86C;
+
+  a {
+    color: #CEE2F3;
+    text-decoration: none;
+  }
+}
+
+h1 {
+  text-shadow: 3px 3px #000000;
+}
+
+#background {
+  background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/af/Stone%2C_wall%2C_textura.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  z-index: -100;
+
+  -webkit-filter: blur(2px) contrast(10%);
+  -moz-filter: blur(2px) contrast(10%);
+  -o-filter: blur(2px) contrast(10%);
+  -ms-filter: blur(2px) contrast(10%);
+  filter: blur(2px) contrast(10%);
 }
 
 @mixin clearfix {
@@ -23,6 +45,14 @@ body {
   padding-top: 60px;
   width: 1200px;
   margin: 0 auto;
+}
+
+tr:hover {
+  color: black;
+
+  a {
+    color: blue;
+  }
 }
 
 @import 'directives/main';

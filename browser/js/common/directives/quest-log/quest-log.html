@@ -1,0 +1,15 @@
+<div id="questLog">
+	<div ng-repeat="quest in game.quests">
+		<span class="quest" ng-class="{ activeShadow: ((game.currentQuestIdx + 1) === quest.questNumber), questFail: quest.status === 'fail', questPass: quest.status === 'success'}">
+			<p ng-class="{opaque: quest.status}">{{ quest.playersNeeded }}</p>
+		</span>
+		<span class="questInfo"> Quest # {{ quest.questNumber }}
+			<span ng-if="quest.toFail > 1">(2 fails)</span>
+		</span>
+	</div>
+	<div id="voteTrack">
+		<img ng-src="" />
+		Vote Track:
+	{{ game.currentVoteTrack }}
+	</div>
+</div>

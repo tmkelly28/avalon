@@ -1,0 +1,17 @@
+<div id="chatEntry">
+	<form name="chat">
+		<div class="form-group">
+			<input 
+				name="chatInput" 
+			    type="text"
+				ng-model="newMessage.text"
+				placeholder="Enter your message"
+				class="form-control" />
+		</div>
+		<input 
+			type="submit" 
+			class="btn btn-default" 
+			ng-click="addMessage()">
+		</input>
+	</form>
+</div>

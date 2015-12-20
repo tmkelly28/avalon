@@ -1,0 +1,10 @@
+<div id="questResult" ng-hide="game.currentGamePhase === 'team voting' || game.currentGamePhase === 'quest voting'">
+	<span ng-repeat="n in range(0, game.previousQuestSuccess)">
+		<img class="grail" 
+		    ng-src="/icons/success.png" />
+	</span>
+	<span ng-repeat="n in range(0, game.previousQuestFail)">
+		<img class="grail" 
+			ng-src="/icons/fail.png" />
+	</span>
+</div>

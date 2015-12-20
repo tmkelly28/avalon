@@ -100,7 +100,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		GameFactory.assignPlayerRoles(game);
 		let turnOrder = _.shuffle(game.players);
 		let lady;
-		if (game.useLady) lady = turnOrder[turnOrder.length - 1];
+		if (game.useLady) {
+			lady = turnOrder[turnOrder.length - 1];
+			let ladyRef = new Firebase(fb + game.$id + '/players/' + lady.playerKey + '/hasBeenLadyOfTheLake');
+			ladyRef.set(true);
+		}
 		else lady = null;
 
 		gameRef.update({
@@ -207,7 +211,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				questArray[oldIdx].status = prevQuestStatus;
 				questRef.set(questArray);
 			});
-			if (game.currentQuestIdx < 5) {
+			if (newIdx < 5) {
 
 				gameRef.update({
 					currentVoteTrack: 0,
@@ -264,7 +268,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	service.guessMerlin = function (id, player) {
 		let identityRef = new Firebase(fb + id + '/players/' + player.playerKey + '/character');
 		identityRef.once('value', snap => {
-			if (snap.val() === 'merlin') service.endGame(id, 'merlinGuessed');
+			if (snap.val() === 'Merlin') service.endGame(id, 'merlinGuessed');
 			else service.endGame(id, 'merlinNotGuessed');
 		})
 	};

@@ -7,7 +7,7 @@
 			<span ng-if="quest.toFail > 1">(2 fails)</span>
 		</span>
 	</div>
-	<div id="voteTrack">
+	<div id="voteTrack" ng-hide="!game.quests">
 		<img ng-src="" />
 		Vote Track:
 	{{ game.currentVoteTrack }}

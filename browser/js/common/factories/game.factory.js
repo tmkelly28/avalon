@@ -103,7 +103,7 @@ app.factory('GameFactory', function () {
 		}
 		// shuffle characters
 		characters = _.shuffle(characters);
-
+		
 		// assign characters
 		for (let player in game.players) {
 			let playerRef = new Firebase("https://resplendent-torch-2655.firebaseio.com/games/" + game.$id + '/players/' + player);

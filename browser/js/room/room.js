@@ -42,7 +42,7 @@ app.controller('RoomCtrl',
 	FbGamesService.registerListeners($scope.game, $scope.userRecord, $scope);
 
 	$scope.addMessage = () => {
-		if ($scope.newMessage.text.length === 0) return;
+		if (!$scope.newMessage.text) return;
 		FbChatService.addChat($scope.chats, author, $scope.newMessage.text);
 		$scope.newMessage.text = "";
 	};

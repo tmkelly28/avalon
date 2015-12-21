@@ -21,4 +21,8 @@
 			{{ player.displayName }} is an agent of evil
 		</span>
 	</span>
+	<p> Turn Order: 
+		<span ng-repeat="player in game.turnOrder" 
+			ng-class="{highlighted:player._id === game.currentPlayerTurn._id}">
+			{{ player.displayName }} </span> </p>
 </div>

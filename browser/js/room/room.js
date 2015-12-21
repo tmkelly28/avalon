@@ -25,7 +25,7 @@ app.config(function ($stateProvider) {
 });
 
 app.controller('RoomCtrl', 
-	function ($scope, game, chats, user, players, userRecord, Session, FbChatService, FbGamesService) {
+	function ($scope, game, chats, user, players, userRecord, Session, FbChatService, FbGamesService, FbListeners) {
 
 	const author = Session.user.displayName;
 
@@ -39,7 +39,7 @@ app.controller('RoomCtrl',
 	$scope.needToVoteOnQuest = true;
 	$scope.investigatedPlayer = null;
 
-	FbGamesService.registerListeners($scope.game, $scope.userRecord, $scope);
+	FbListeners.registerListeners($scope.game, $scope.userRecord, $scope);
 
 	$scope.addMessage = () => {
 		if (!$scope.newMessage.text) return;

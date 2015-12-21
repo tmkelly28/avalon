@@ -137,8 +137,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			evilScoreRef.once('value', snap => {
 				if (snap.val() === 3) return;
 				else {
-					service.goToNextQuest(id, 'fail');
-					service.goToNextTurn(id, null, scope);					
+					service.goToNextQuest(id, 'fail', scope);
+					// service.goToNextTurn(id, null, scope);					
 				}
 			});
 		} else {
@@ -146,14 +146,14 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			loyalScoreRef.once('value', snap => {
 				if (snap.val() === 3) return;
 				else {
-					service.goToNextQuest(id, 'success');
-					service.goToNextTurn(id, null, scope);
+					service.goToNextQuest(id, 'success', scope);
+					// service.goToNextTurn(id, null, scope);
 				}
 			});
 		}
 	};
 
-	service.goToNextQuest = function (id, prevQuestStatus) {
+	service.goToNextQuest = function (id, prevQuestStatus, scope) {
 		let gameRef = new Firebase(fb + id);
 		let questRef = new Firebase(fb + id + '/quests');
 		gameRef.once('value', snap => {
@@ -181,13 +181,19 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					previousQuestFail: game.currentQuestFail
 				});
 			} // score listener should take over otherwise
+			service.goToNextTurn(id, null, scope);	
 		});
 	};
 
 	service.goToNextTurn = function (id, rejectedQuest, scope) {
 		let gameRef = new Firebase(fb + id);
 		let currentVoteTrackRef = new Firebase(fb + id + '/currentVoteTrack');
-		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => (currentVal + 1));
+
+		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => {
+			console.log(currentVal)
+			return (currentVal || 0) + 1;
+		});
+
 		gameRef.once('value', snap => {
 			let game = snap.val();
 			let newIdx = game.currentTurnIdx + 1;
@@ -195,7 +201,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			if (newIdx === numberOfPlayers) newIdx = 0;
 
 			let nextPhase = 'team building';
-			if (game.useLady && (game.currentQuestIdx > 1 && game.currentQuestIdx < 5)) nextPhase = 'using lady';
+			if (game.useLady && (game.currentQuestIdx > 1 && game.currentQuestIdx < 5) && !rejectedQuest) nextPhase = 'using lady';
 
 			gameRef.update({
 				currentGamePhase: nextPhase,

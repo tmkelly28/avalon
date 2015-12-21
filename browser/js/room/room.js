@@ -48,26 +48,26 @@ app.controller('RoomCtrl',
 	};
 	$scope.isHost = () => Session.user._id === $scope.game.host;
 	$scope.ableToBegin = () => {
-		let numberOfPlayers = Object.keys($scope.game.players).length
+		let numberOfPlayers = Object.keys($scope.game.players).length;
 		return numberOfPlayers >= $scope.game.targetSize && numberOfPlayers < 11;
 	};
 	$scope.startGame = () => FbGamesService.startGame($scope.game);
 	$scope.me = (player) => player._id === $scope.user._id;
 	$scope.voteApprove = () => {
 		$scope.needToVoteForTeam = false;
-		FbGamesService.approveTeam($scope.game.$id, $scope.userRecord.playerKey)
+		FbGamesService.approveTeam($scope.game.$id, $scope.userRecord.playerKey);
 	};
 	$scope.voteReject = () => {
 		$scope.needToVoteForTeam = false;
-		FbGamesService.rejectTeam($scope.game.$id, $scope.userRecord.playerKey)
+		FbGamesService.rejectTeam($scope.game.$id, $scope.userRecord.playerKey);
 	};
 	$scope.successQuest = () => {
 		$scope.needToVoteOnQuest = false;
-		FbGamesService.voteToSucceed($scope.game.$id)
+		FbGamesService.voteToSucceed($scope.game.$id);
 	};
 	$scope.failQuest = () => {
 		$scope.needToVoteOnQuest = false;
-		FbGamesService.voteToFail($scope.game.$id)
+		FbGamesService.voteToFail($scope.game.$id);
 	};
 	$scope.addToTeam = (player) => FbGamesService.addToTeam($scope.game.$id, player);
 	$scope.proposeTeam = () => FbGamesService.proposeTeam($scope.game.$id);
@@ -84,6 +84,6 @@ app.controller('RoomCtrl',
 			loyalty: player.loyalty,
 			displayName: player.displayName
 		}
-		FbGamesService.useLady($scope.game.$id, player)
+		FbGamesService.useLady($scope.game.$id, player);
 	};
 });

@@ -192,7 +192,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let game = snap.val();
 			let newIdx = game.currentTurnIdx + 1;
 			let numberOfPlayers = Object.keys(game.players).length;
-			if (newIdx > numberOfPlayers) newIdx = 0;
+			if (newIdx === numberOfPlayers) newIdx = 0;
 
 			let nextPhase = 'team building';
 			if (game.useLady && (game.currentQuestIdx > 1 && game.currentQuestIdx < 5)) nextPhase = 'using lady';

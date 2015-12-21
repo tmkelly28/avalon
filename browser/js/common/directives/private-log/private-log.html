@@ -1,9 +1,9 @@
-<div class="well" id="privateLog">
-	<p ng-if="investigatedPlayer">
+<div id="privateLog">
+	<span ng-if="investigatedPlayer">
 		<span class="glyphicon glyphicon-eye-open"></span>
 		{{ investigatedPlayer.displayName }} is {{ investigatedPlayer.loyalty }}
-	</p>
-	<p ng-repeat="player in game.players">
+	</span>
+	<span ng-repeat="player in game.players">
 		<span ng-if="(user.character==='Percival') && (player.character==='Morgana')">
 			<span class="glyphicon glyphicon-eye-open"></span>
 			{{ player.displayName }} is a wizard
@@ -20,5 +20,5 @@
 			<span class="glyphicon glyphicon-eye-open"></span>
 			{{ player.displayName }} is an agent of evil
 		</span>
-	</p>
+	</span>
 </div>

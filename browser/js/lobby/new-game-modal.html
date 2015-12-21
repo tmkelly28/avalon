@@ -19,7 +19,7 @@
 			        <label class="btn btn-primary" ng-model="newGame.numberOfPlayers" uib-btn-radio="10">10</label>
 			    </div>
 			    <div>
-				    <label>Special Rules:</label>
+				    <label>Optional Characters:</label>
 				    <div class="btn-group">
 				    	<label class="btn btn-primary" ng-model="newGame.lady" uib-btn-checkbox>Lady of the Lake</label>
 				    	<label class="btn btn-primary" ng-model="newGame.mordred" uib-btn-checkbox>Mordred</label>
@@ -31,6 +31,16 @@
 			</form>
 		</div>
 		<div class="modal-footer">
+			<div class="alert alert-warning" 
+				ng-if="newGame.lady && newGame.numberOfPlayers < 7" 
+				style="text-align:center">
+				Lady of the Lake is best with at least seven players
+			</div>
+			<div class="alert alert-warning" 
+				ng-if="newGame.percival && newGame.numberOfPlayers === 5 && (!newGame.morgana && !newGame.mordred)"
+				style="text-align:center">
+				For 5 players, be sure to add Mordred or Morgana when using Percival
+			</div>
 			<button class='btn btn-default' ng-click="createNewGame()">Create Room</button>
         </div>
 	</div>

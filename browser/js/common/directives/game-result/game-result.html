@@ -1,6 +1,17 @@
 <div id="gameResult">
-	<alert ng-if="game.currentGamePhase==='guess merlin'">Good has prevailed, but now evil may guess Merlin</alert>
-	<alert ng-if="game.currentGamePhase==='end evil wins'">Evil wins!</alert>
-	<alert ng-if="game.currentGamePhase==='end good wins'">Good wins!</alert>
-	<alert ng-if="game.currentGamePhase==='end evil guessed merlin'">Evil Guessed Merlin! Evil Wins</alert>
+	<div class="alert alert-warning" ng-if="game.currentGamePhase==='guess merlin'">
+		Good has prevailed, but now evil may guess Merlin
+	</div>
+	<div class="alert alert-danger" ng-if="game.currentGamePhase==='end evil wins'">
+		Evil wins!
+		<a ui-sref="lobby({uid:user._id})">Return to lobby</a>
+	</div>
+	<div class="alert alert-info" ng-if="game.currentGamePhase==='end good wins'">
+		Good wins!
+		<a ui-sref="lobby({uid:user._id})">Return to lobby</a>
+	</div>
+	<div class="alert alert-danger" ng-if="game.currentGamePhase==='end evil guessed merlin'">
+		Evil Guessed Merlin! Evil Wins
+		<a ui-sref="lobby({uid:user._id})">Return to lobby</a>
+	</div>
 </div>

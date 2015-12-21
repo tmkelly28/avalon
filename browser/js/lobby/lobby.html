@@ -10,11 +10,11 @@
     			<th>Host</th>
     			<th># Players</th>
     			<th>Expected # Players</th>
-    			<th>Notes</th>
+    			<th>Optional Characters</th>
     		</tr>
     	</thead>
 		<tbody>
-            <tr ng-repeat='game in games'>
+            <tr ng-repeat='game in games | filter : { waitingToPlay: true }'>
     			<th scope="row"><a href="#" ng-click="openJoinGameModal(game)">{{ game.name }}</a></th>
     			<td> {{ game.hostName }} </td>
     			<td> {{ numberOfPlayers(game) }} </td>

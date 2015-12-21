@@ -12,7 +12,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.fetchById = function (key) {
-		let gameRef = new Firebase(fb + key);
+		let gameRef = gamesRef.child(key);
 		return $firebaseObject(gameRef);
 	};
 
@@ -23,7 +23,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.addPlayerToGame = function (gameKey, player) {
-		let playersRef = new Firebase(fb + gameKey + "/players");
+		let playersRef = gamesRef.child(gameKey + "/players");
 		return new Promise((resolve, reject) => {
 			let ref = playersRef.push();
 			let key = ref.key();
@@ -39,24 +39,24 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.fetchPlayer = function (gameKey, playerKey) {
-		let playerRef = new Firebase(fb + gameKey + "/players/" + playerKey);
+		let playerRef = gamesRef.child(gameKey + "/players/" + playerKey);
 		return $firebaseObject(playerRef);
 	};
 
 	service.fetchPlayers = function (gameKey) {
-		let playersRef = new Firebase(fb + gameKey + "/players");
+		let playersRef = gamesRef.child(gameKey + "/players");
 		return $firebaseObject(playersRef);
 	};
 
 	service.startGame = function (game) {
-		let gameRef = new Firebase(fb + game.$id);
+		let gameRef = gamesRef.child(game.$id);
 		let quests = GameFactory.assignQuests(game);
 		GameFactory.assignPlayerRoles(game);
 		let turnOrder = _.shuffle(game.players);
 		let lady;
 		if (game.useLady) {
 			lady = turnOrder[turnOrder.length - 1];
-			let ladyRef = new Firebase(fb + game.$id + '/players/' + lady.playerKey + '/hasBeenLadyOfTheLake');
+			let ladyRef = gamesRef.child(game.$id + '/players/' + lady.playerKey + '/hasBeenLadyOfTheLake');
 			ladyRef.set(true);
 		}
 		else lady = null;
@@ -85,53 +85,53 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.approveTeam = function (id, playerKey) {
-		let approveRef = new Firebase(fb + id + '/currentQuestApproves');
-		let playerRef = new Firebase(fb + id + '/players/' + playerKey + '/approvedQuest');
+		let approveRef = gamesRef.child(id + '/currentQuestApproves');
+		let playerRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
 		approveRef.transaction(currentVal => (currentVal + 1));
 		playerRef.set(true);
 	};
 
 	service.rejectTeam = function (id, playerKey) {
-		let rejectRef = new Firebase(fb + id + '/currentQuestRejects');
-		let playerRef = new Firebase(fb + id + '/players/' + playerKey + '/approvedQuest');
+		let rejectRef = gamesRef.child(id + '/currentQuestRejects');
+		let playerRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
 		rejectRef.transaction(currentVal => (currentVal + 1));
 		playerRef.set(false);
 	};
 
 	service.voteToSucceed = function (id) {
-		let ref = new Firebase(fb + id + '/currentQuestSuccess');
+		let ref = gamesRef.child(id + '/currentQuestSuccess');
 		ref.transaction(currentVal => (currentVal + 1));
 	};
 
 	service.voteToFail = function (id) {
-		let ref = new Firebase(fb + id + '/currentQuestFail');
+		let ref = gamesRef.child(id + '/currentQuestFail');
 		ref.transaction(currentVal => (currentVal + 1));
 	};
 
 	service.addToTeam = function (id, player) {
-		let teamRef = new Firebase(fb + id + '/currentQuestPlayersGoing');
+		let teamRef = gamesRef.child(id + '/currentQuestPlayersGoing');
 		let newTeamMemberRef = teamRef.push();
 		newTeamMemberRef.set(player);
 	};
 
 	service.proposeTeam = function (id) {
-		let ref = new Firebase(fb + id + '/currentGamePhase');
+		let ref = gamesRef.child(id + '/currentGamePhase');
 		ref.set('team voting');
 	};
 
 	service.resetTeam = function (id) {
-		let ref = new Firebase(fb + id + '/currentQuestPlayersGoing');
+		let ref = gamesRef.child(id + '/currentQuestPlayersGoing');
 		ref.set(null);
 	};
 
 	service.goToQuestVoting = function (id) {
-		let ref = new Firebase(fb + id + '/currentGamePhase');
+		let ref = gamesRef.child(id + '/currentGamePhase');
 		ref.set('quest voting');
 	};
 
 	service.goToQuestResult = function (id, result, scope) {
-		let loyalScoreRef = new Firebase(fb + id + '/loyalScore');
-		let evilScoreRef = new Firebase(fb + id + '/evilScore');
+		let loyalScoreRef = gamesRef.child(id + '/loyalScore');
+		let evilScoreRef = gamesRef.child(id + '/evilScore');
 		if (result === 'evil') {
 			evilScoreRef.transaction(currentVal => (currentVal + 1));
 			evilScoreRef.once('value', snap => {
@@ -154,8 +154,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.goToNextQuest = function (id, prevQuestStatus, scope) {
-		let gameRef = new Firebase(fb + id);
-		let questRef = new Firebase(fb + id + '/quests');
+		let gameRef = gamesRef.child(id);
+		let questRef = gamesRef.child(id + '/quests');
 		gameRef.once('value', snap => {
 			let game = snap.val();
 			let oldIdx = game.currentQuestIdx;
@@ -186,8 +186,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.goToNextTurn = function (id, rejectedQuest, scope) {
-		let gameRef = new Firebase(fb + id);
-		let currentVoteTrackRef = new Firebase(fb + id + '/currentVoteTrack');
+		let gameRef = gamesRef.child(id);
+		let currentVoteTrackRef = gamesRef.child(id + '/currentVoteTrack');
 
 		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => {
 			console.log(currentVal)
@@ -218,7 +218,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.endGame = function (id, result) {
-		let gameRef = new Firebase(fb + id);
+		let gameRef = gamesRef.child(id);
 		if (result === 'evil') gameRef.update({ currentGamePhase: 'end evil wins' });
 		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end evil guessed merlin' });
 		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end good wins' });
@@ -226,7 +226,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.guessMerlin = function (id, player) {
-		let identityRef = new Firebase(fb + id + '/players/' + player.playerKey + '/character');
+		let identityRef = gamesRef.child(id + '/players/' + player.playerKey + '/character');
 		identityRef.once('value', snap => {
 			if (snap.val() === 'Merlin') service.endGame(id, 'merlinGuessed');
 			else service.endGame(id, 'merlinNotGuessed');
@@ -234,8 +234,8 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 	};
 
 	service.useLady = function (id, player) {
-		let gameRef = new Firebase(fb + id);
-		let playerHasBeenLadyRef = new Firebase(fb + id + '/players/' + player.playerKey + '/hasBeenLadyOfTheLake');
+		let gameRef = gamesRef.child(id);
+		let playerHasBeenLadyRef = gamesRef.child(id + '/players/' + player.playerKey + '/hasBeenLadyOfTheLake');
 		playerHasBeenLadyRef.set(true);
 		gameRef.update({
 			currentLadyOfTheLake: player,

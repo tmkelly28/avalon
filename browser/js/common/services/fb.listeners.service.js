@@ -6,7 +6,7 @@ app.service('FbListeners', function (FbGamesService, Session) {
 		const fb = 'https://resplendent-torch-2655.firebaseio.com/games/';
 		const gameId = game.$id;
 		const gameRef = new Firebase(fb + gameId);
-		const playerIsOnQuestRef = new Firebase(fb + gameId + '/players/' + user.playerKey + '/onQuest');
+		const playerIsOnQuestRef = gameRef.child('players/' + user.playerKey + '/onQuest');
 		const currentQuestPlayersGoingRef = gameRef.child('currentQuestPlayersGoing');
 		const currentPlayerTurnRef = gameRef.child('currentPlayerTurn');
 		const currentQuestApprovesRef = gameRef.child('currentQuestApproves');

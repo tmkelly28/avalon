@@ -4,5 +4,5 @@ npm-debug.log
 public
 .DS_Store
 coverage
-server/env
+server/env/development.js
 gameClass

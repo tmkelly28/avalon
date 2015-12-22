@@ -2,8 +2,6 @@
 
 app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFactory, UserService) {
 
-
-	const fb = 'https://resplendent-torch-2655.firebaseio.com/games/';
 	const gamesRef = new Firebase("https://resplendent-torch-2655.firebaseio.com/games");
 	const service = this;
 
@@ -138,7 +136,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				if (snap.val() === 3) return;
 				else {
 					service.goToNextQuest(id, 'fail', scope);
-					// service.goToNextTurn(id, null, scope);					
 				}
 			});
 		} else {
@@ -147,7 +144,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				if (snap.val() === 3) return;
 				else {
 					service.goToNextQuest(id, 'success', scope);
-					// service.goToNextTurn(id, null, scope);
 				}
 			});
 		}
@@ -155,7 +151,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.goToNextQuest = function (id, prevQuestStatus, scope) {
 		let gameRef = gamesRef.child(id);
-		let questRef = gamesRef.child(id + '/quests');
+		let questRef = gameRef.child('quests');
 		gameRef.once('value', snap => {
 			let game = snap.val();
 			let oldIdx = game.currentQuestIdx;
@@ -181,18 +177,16 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					previousQuestFail: game.currentQuestFail
 				});
 			} // score listener should take over otherwise
-			service.goToNextTurn(id, null, scope);	
+			service.goToNextTurn(id, false, scope);	
 		});
 	};
 
 	service.goToNextTurn = function (id, rejectedQuest, scope) {
 		let gameRef = gamesRef.child(id);
-		let currentVoteTrackRef = gamesRef.child(id + '/currentVoteTrack');
+		let currentVoteTrackRef = gameRef.child('currentVoteTrack');
 
-		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => {
-			console.log(currentVal)
-			return (currentVal || 0) + 1;
-		});
+		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => (currentVal || 0) + 1);
+		else currentVoteTrackRef.set(0);
 
 		gameRef.once('value', snap => {
 			let game = snap.val();
@@ -235,7 +229,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.useLady = function (id, player) {
 		let gameRef = gamesRef.child(id);
-		let playerHasBeenLadyRef = gamesRef.child(id + '/players/' + player.playerKey + '/hasBeenLadyOfTheLake');
+		let playerHasBeenLadyRef = gameRef.child('players/' + player.playerKey + '/hasBeenLadyOfTheLake');
 		playerHasBeenLadyRef.set(true);
 		gameRef.update({
 			currentLadyOfTheLake: player,

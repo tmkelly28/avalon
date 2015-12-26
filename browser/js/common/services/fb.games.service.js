@@ -183,10 +183,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.goToNextTurn = function (id, rejectedQuest, scope) {
 		let gameRef = gamesRef.child(id);
-		let currentVoteTrackRef = gameRef.child('currentVoteTrack');
-
-		if (rejectedQuest) currentVoteTrackRef.transaction(currentVal => (currentVal || 0) + 1);
-		else currentVoteTrackRef.set(0);
 
 		gameRef.once('value', snap => {
 			let game = snap.val();
@@ -194,10 +190,15 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			let numberOfPlayers = Object.keys(game.players).length;
 			if (newIdx === numberOfPlayers) newIdx = 0;
 
+			let newVoteTrack;
+			if (rejectedQuest) newVoteTrack = game.currentVoteTrack + 1;
+			else newVoteTrack = 0;
+
 			let nextPhase = 'team building';
 			if (game.useLady && (game.currentQuestIdx > 1 && game.currentQuestIdx < 5) && !rejectedQuest) nextPhase = 'using lady';
 
 			gameRef.update({
+				currentVoteTrack: newVoteTrack,
 				currentGamePhase: nextPhase,
 				currentTurnIdx: newIdx,
 				currentQuestPlayersGoing: null,
@@ -206,9 +207,6 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 				currentPlayerTurn: game.turnOrder[newIdx]
 			});
 		});
-
-		scope.needToVoteForTeam = true;
-		scope.needToVoteOnQuest = true;
 	};
 
 	service.endGame = function (id, result) {

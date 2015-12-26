@@ -1,3 +1,5 @@
+'use strict';
+
 app.service('FbListeners', function (FbGamesService, Session) {
 
 	this.registerListeners = function (game, user, scope) {
@@ -99,6 +101,10 @@ app.service('FbListeners', function (FbGamesService, Session) {
 		// track end game conditions
 		currentVoteTrackRef.on('value', snap => {
 			if (snap.val() === 5) FbGamesService.endGame(gameId, 'evil');
+			else {
+				scope.needToVoteForTeam = true;
+				scope.needToVoteOnQuest = true;				
+			}
 		});
 		loyalScoreRef.on('value', snap => {
 			if (snap.val() === 3) FbGamesService.endGame(gameId, 'good');

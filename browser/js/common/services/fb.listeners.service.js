@@ -25,15 +25,15 @@ app.service('FbListeners', function (FbGamesService, Session) {
 			let numberOfPlayers = Object.keys(game.players).length;
 			if ((approves + rejects) === numberOfPlayers) {
 				if (approves > rejects) FbGamesService.goToQuestVoting(gameId);
-				else FbGamesService.goToNextTurn(gameId, 'rejectedQuest', scope);
+				else FbGamesService.goToNextTurn(gameId, 'rejectedQuest');
 			}
 		}
 		function tallyGrails (successes, fails) {
 			if (!game.currentQuestPlayersGoing) return; // prevent error on refresh
 			let questSize = Object.keys(game.currentQuestPlayersGoing).length;
 			if ((successes + fails) === questSize) {
-				if (fails >= game.currentQuestToFail) FbGamesService.goToQuestResult(gameId, 'evil', scope);
-				else FbGamesService.goToQuestResult(gameId, 'good', scope);
+				if (fails >= game.currentQuestToFail) FbGamesService.goToQuestResult(gameId, 'evil');
+				else FbGamesService.goToQuestResult(gameId, 'good');
 			}
 		}
 

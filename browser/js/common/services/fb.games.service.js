@@ -127,7 +127,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		ref.set('quest voting');
 	};
 
-	service.goToQuestResult = function (id, result, scope) {
+	service.goToQuestResult = function (id, result) {
 		let loyalScoreRef = gamesRef.child(id + '/loyalScore');
 		let evilScoreRef = gamesRef.child(id + '/evilScore');
 		if (result === 'evil') {
@@ -135,7 +135,7 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			evilScoreRef.once('value', snap => {
 				if (snap.val() === 3) return;
 				else {
-					service.goToNextQuest(id, 'fail', scope);
+					service.goToNextQuest(id, 'fail');
 				}
 			});
 		} else {
@@ -143,13 +143,13 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 			loyalScoreRef.once('value', snap => {
 				if (snap.val() === 3) return;
 				else {
-					service.goToNextQuest(id, 'success', scope);
+					service.goToNextQuest(id, 'success');
 				}
 			});
 		}
 	};
 
-	service.goToNextQuest = function (id, prevQuestStatus, scope) {
+	service.goToNextQuest = function (id, prevQuestStatus) {
 		let gameRef = gamesRef.child(id);
 		let questRef = gameRef.child('quests');
 		gameRef.once('value', snap => {
@@ -177,11 +177,11 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 					previousQuestFail: game.currentQuestFail
 				});
 			} // score listener should take over otherwise
-			service.goToNextTurn(id, false, scope);	
+			service.goToNextTurn(id, false);	
 		});
 	};
 
-	service.goToNextTurn = function (id, rejectedQuest, scope) {
+	service.goToNextTurn = function (id, rejectedQuest) {
 		let gameRef = gamesRef.child(id);
 
 		gameRef.once('value', snap => {

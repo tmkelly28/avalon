@@ -1,4 +1,4 @@
-<div id="questResult" ng-hide="game.currentGamePhase === 'team voting' || game.currentGamePhase === 'quest voting'">
+<div id="questResult" ng-show="(game.currentGamePhase === 'team building' && game.currentVoteTrack === 0)">
 	<span ng-repeat="n in range(0, game.previousQuestSuccess)">
 		<img class="grail" 
 		    ng-src="/icons/success.png" />

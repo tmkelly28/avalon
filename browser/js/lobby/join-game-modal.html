@@ -12,5 +12,10 @@
 				style="text-align:center">
 				Room is full - maximum number of players is 10
 		</div>
+		<div class="alert alert-warning" 
+				ng-if="alreadyJoined()" 
+				style="text-align:center">
+				You have already joined this game
+		</div>
 	</div>
 </div>

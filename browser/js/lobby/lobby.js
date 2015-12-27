@@ -109,11 +109,20 @@ app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance,
 	}
 
 	$scope.joinGame = function () {
-		FbGamesService.addPlayerToGame($scope.game.$id, $scope.user)
-		.then(() => {
+		if (!$scope.alreadyJoined()) {
+			FbGamesService.addPlayerToGame($scope.game.$id, $scope.user)
+			.then(() => {
+				$state.go('room', { key: $scope.game.$id });
+				$uibModalInstance.dismiss();
+			});
+		} else {
 			$state.go('room', { key: $scope.game.$id });
 			$uibModalInstance.dismiss();
-		});
+		}
+	}
+
+	$scope.alreadyJoined = function () {
+		return Object.keys($scope.game.players).includes($scope.user.playerKey);
 	}
 
 	$scope.numberOfPlayers = function () {

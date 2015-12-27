@@ -4,8 +4,13 @@
 	</div>
 	<div class='modal-footer'>
 		<div class="form-group">
-				<button class="btn btn-success" ng-click="joinGame()">Join</button>
+				<button class="btn btn-success" ng-click="joinGame()" ng-disabled="(numberOfPlayers(game) === 10)">Join</button>
 				<button class="btn btn-danger" ng-click="dismiss()">Cancel</button>
+		</div>
+		<div class="alert alert-warning" 
+				ng-if="(numberOfPlayers(game) === 10)" 
+				style="text-align:center">
+				Room is full - maximum number of players is 10
 		</div>
 	</div>
 </div>

@@ -1,6 +1,6 @@
 'use strict';
 
-app.service('FbListeners', function (FbGamesService, Session) {
+app.service('FbListeners', function (FbGamesService, Session, UserService) {
 
 	this.registerListeners = function (game, user, scope) {
 
@@ -8,6 +8,7 @@ app.service('FbListeners', function (FbGamesService, Session) {
 		const fb = 'https://resplendent-torch-2655.firebaseio.com/games/';
 		const gameId = game.$id;
 		const gameRef = new Firebase(fb + gameId);
+		const playerRef = gameRef.child('players/' + user.playerKey);
 		const playerIsOnQuestRef = gameRef.child('players/' + user.playerKey + '/onQuest');
 		const playerNeedToVoteForTeamRef = gameRef.child('players/' + user.playerKey + '/needToVoteForTeam');
 		const playerNeedToVoteOnQuestRef = gameRef.child('players/' + user.playerKey + '/needToVoteOnQuest');
@@ -45,7 +46,9 @@ app.service('FbListeners', function (FbGamesService, Session) {
 			if (snap.val() === 'team voting') {
 				playerNeedToVoteForTeamRef.set(true);
 				playerNeedToVoteOnQuestRef.set(true);
-			}
+			} else if (snap.val() === 'end evil wins') playerRef.once('value', data => UserService.updateStatistics(data.val(), 'evil', false)); 
+			else if (snap.val() === 'end good wins') playerRef.once('value', data => UserService.updateStatistics(data.val(), 'good', false)); 
+			else if (snap.val() === 'end evil guessed merlin') playerRef.once('value', data => UserService.updateStatistics(data.val(), 'evil', true)); 
 		});
 
 		// update player turn
@@ -111,13 +114,13 @@ app.service('FbListeners', function (FbGamesService, Session) {
 
 		// track end game conditions
 		currentVoteTrackRef.on('value', snap => {
-			if (snap.val() === 5) FbGamesService.endGame(gameId, 'evil', user.playerKey);
+			if (snap.val() === 5) FbGamesService.endGame(gameId, 'evil');
 		});
 		loyalScoreRef.on('value', snap => {
-			if (snap.val() === 3) FbGamesService.endGame(gameId, 'good', user.playerKey);
+			if (snap.val() === 3) FbGamesService.endGame(gameId, 'good');
 		});
 		evilScoreRef.on('value', snap => {
-			if (snap.val() === 3) FbGamesService.endGame(gameId, 'evil', user.playerKey);
+			if (snap.val() === 3) FbGamesService.endGame(gameId, 'evil');
 		});
 	};
 

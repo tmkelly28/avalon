@@ -28,8 +28,15 @@ app.service('UserService', function ($http) {
 		.then(null, errorHandler)
 	}
 
-	this.updateStatistics = function (playerKey) {
-		//has playerKey
+	this.updateStatistics = function (player, winner, guessedMerlin) {
+		return $http.put('/api/users/' + player._id +'/statistics', {
+			character: player.character,
+			loyalty: player.loyalty,
+			winner: winner,
+			guessedMerlin: guessedMerlin
+		})
+		.then(toData)
+		.then(null, errorHandler)
 	}
 	
 });

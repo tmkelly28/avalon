@@ -51,7 +51,20 @@ router.put('/:id/statistics', function updateStatistics (req, res, next) {
 		owner: req.targetUser._id
 	})
 	.then(statistics => {
-		_.extend(statistics, req.body);
+		if (req.body.character === 'Merlin') statistics.merlin++;
+		if (req.body.character === 'Mordred') statistics.mordred++;
+		if (req.body.character === 'Morgana') statistics.morgana++;
+		if (req.body.character === 'Percival') statistics.percival++;
+		if (req.body.character === 'Oberon') statistics.oberon++;
+		if (req.body.character === 'Assassin') statistics.assassin++;
+		if (req.body.character === 'Servant of Arthur') statistics.loyal++;
+		if (req.body.character === 'Minion of Mordred') statistics.minion++;
+		
+		if (req.body.loyalty === req.body.winner) statistics.wins++;
+		else statistics.losses++;
+
+		if (req.body.character === 'Assassin' && req.body.guessedMerlin) statistics.guessedMerlin++;
+
 		return statistics.save();
 	})
 	.then(update => res.status(200).json(update))

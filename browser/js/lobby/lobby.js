@@ -116,8 +116,8 @@ app.controller('JoinGameModalCtrl', function ($scope, $state, $uibModalInstance,
 		});
 	}
 
-	$scope.numberOfPlayers = function (game) {
-		if (game.players) return Object.keys(game.players).length;
+	$scope.numberOfPlayers = function () {
+		if ($scope.game.players) return Object.keys($scope.game.players).length;
 		else return 1;
 	}
 

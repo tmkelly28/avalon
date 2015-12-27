@@ -84,26 +84,34 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 
 	service.approveTeam = function (id, playerKey) {
 		let approveRef = gamesRef.child(id + '/currentQuestApproves');
-		let playerRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
+		let playerApprovedRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
+		let playerNeedsToVoteRef = gamesRef.child(id + '/players/' + playerKey + '/needToVoteForTeam');
 		approveRef.transaction(currentVal => (currentVal + 1));
-		playerRef.set(true);
+		playerApprovedRef.set(true);
+		playerNeedsToVoteRef.set(false);
 	};
 
 	service.rejectTeam = function (id, playerKey) {
 		let rejectRef = gamesRef.child(id + '/currentQuestRejects');
-		let playerRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
+		let playerApprovedRef = gamesRef.child(id + '/players/' + playerKey + '/approvedQuest');
+		let playerNeedsToVoteRef = gamesRef.child(id + '/players/' + playerKey + '/needToVoteForTeam');
 		rejectRef.transaction(currentVal => (currentVal + 1));
-		playerRef.set(false);
+		playerApprovedRef.set(false);
+		playerNeedsToVoteRef.set(false);
 	};
 
-	service.voteToSucceed = function (id) {
+	service.voteToSucceed = function (id, playerKey) {
 		let ref = gamesRef.child(id + '/currentQuestSuccess');
+		let playerNeedsToVoteRef = gamesRef.child(id + '/players/' + playerKey + '/needToVoteOnQuest');
 		ref.transaction(currentVal => (currentVal + 1));
+		playerNeedsToVoteRef.set(false);
 	};
 
-	service.voteToFail = function (id) {
+	service.voteToFail = function (id, playerKey) {
 		let ref = gamesRef.child(id + '/currentQuestFail');
+		let playerNeedsToVoteRef = gamesRef.child(id + '/players/' + playerKey + '/needToVoteOnQuest');
 		ref.transaction(currentVal => (currentVal + 1));
+		playerNeedsToVoteRef.set(false);
 	};
 
 	service.addToTeam = function (id, player) {
@@ -209,12 +217,18 @@ app.service('FbGamesService', function ($firebaseArray, $firebaseObject, GameFac
 		});
 	};
 
-	service.endGame = function (id, result) {
+	service.endGame = function (id, result, user) {
 		let gameRef = gamesRef.child(id);
-		if (result === 'evil') gameRef.update({ currentGamePhase: 'end evil wins' });
-		else if (result === 'merlinGuessed') gameRef.update({ currentGamePhase: 'end evil guessed merlin' });
-		else if (result === 'merlinNotGuessed') gameRef.update({ currentGamePhase: 'end good wins' });
-		else gameRef.update({ currentGamePhase: 'guess merlin' });		
+		if (result === 'evil') {
+			gameRef.update({ currentGamePhase: 'end evil wins' });
+			UserService.updateStatistics(user);
+		} else if (result === 'merlinGuessed') {
+			gameRef.update({ currentGamePhase: 'end evil guessed merlin' });
+			UserService.updateStatistics(user);
+		} else if (result === 'merlinNotGuessed') {
+			gameRef.update({ currentGamePhase: 'end good wins' });
+			UserService.updateStatistics(user);
+		} else gameRef.update({ currentGamePhase: 'guess merlin' });		
 	};
 
 	service.guessMerlin = function (id, player) {

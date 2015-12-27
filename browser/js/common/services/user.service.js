@@ -27,5 +27,9 @@ app.service('UserService', function ($http) {
 		.then(toData)
 		.then(null, errorHandler)
 	}
+
+	this.updateStatistics = function (playerKey) {
+		//has playerKey
+	}
 	
 });

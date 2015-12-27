@@ -11,25 +11,25 @@
 		<a 
 			class="btn btn-default"  
 		    ng-click="voteApprove()"
-		    ng-if="(game.currentGamePhase === 'team voting') && needToVoteForTeam">
+		    ng-if="(game.currentGamePhase === 'team voting') && user.needToVoteForTeam">
 		    Approve
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="voteReject()"
-		    ng-if="(game.currentGamePhase === 'team voting') && needToVoteForTeam">
+		    ng-if="(game.currentGamePhase === 'team voting') && user.needToVoteForTeam">
 		    Reject
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="successQuest()"
-		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && needToVoteOnQuest">
+		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && user.needToVoteOnQuest">
 		    Success
 		</a>
 		<a 
 			class="btn btn-default"  
 		    ng-click="failQuest()"
-		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && needToVoteOnQuest">
+		    ng-if="(game.currentGamePhase === 'quest voting') && user.onQuest && user.needToVoteOnQuest">
 		    Fail
 		</a>
 		<button 

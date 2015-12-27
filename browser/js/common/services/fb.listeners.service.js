@@ -9,8 +9,11 @@ app.service('FbListeners', function (FbGamesService, Session) {
 		const gameId = game.$id;
 		const gameRef = new Firebase(fb + gameId);
 		const playerIsOnQuestRef = gameRef.child('players/' + user.playerKey + '/onQuest');
+		const playerNeedToVoteForTeamRef = gameRef.child('players/' + user.playerKey + '/needToVoteForTeam');
+		const playerNeedToVoteOnQuestRef = gameRef.child('players/' + user.playerKey + '/needToVoteOnQuest');
 		const currentQuestPlayersGoingRef = gameRef.child('currentQuestPlayersGoing');
 		const currentPlayerTurnRef = gameRef.child('currentPlayerTurn');
+		const currentGamePhaseRef = gameRef.child('currentGamePhase');
 		const currentQuestApprovesRef = gameRef.child('currentQuestApproves');
 		const currentQuestRejectsRef = gameRef.child('currentQuestRejects');
 		const currentQuestSuccessRef = gameRef.child('currentQuestSuccess');
@@ -36,6 +39,14 @@ app.service('FbListeners', function (FbGamesService, Session) {
 				else FbGamesService.goToQuestResult(gameId, 'good');
 			}
 		}
+
+		// update voting buttons
+		currentGamePhaseRef.on('value', snap => {
+			if (snap.val() === 'team voting') {
+				playerNeedToVoteForTeamRef.set(true);
+				playerNeedToVoteOnQuestRef.set(true);
+			}
+		});
 
 		// update player turn
 		currentPlayerTurnRef.on('value', snap => {
@@ -67,11 +78,11 @@ app.service('FbListeners', function (FbGamesService, Session) {
 			let team = snap.val();
 			let teamKeys = Object.keys(team);
 			teamKeys.forEach(key => {
-					let ref = gameRef.child('currentQuestPlayersGoing/' + key);
-					ref.once('value', () => {
-						playerIsOnQuestRef.set(false)
-					});
+				let ref = gameRef.child('currentQuestPlayersGoing/' + key);
+				ref.once('value', () => {
+					playerIsOnQuestRef.set(false)
 				});
+			});
 		});
 
 		// track approvals and rejections for teams
@@ -100,17 +111,13 @@ app.service('FbListeners', function (FbGamesService, Session) {
 
 		// track end game conditions
 		currentVoteTrackRef.on('value', snap => {
-			if (snap.val() === 5) FbGamesService.endGame(gameId, 'evil');
-			else {
-				scope.needToVoteForTeam = true;
-				scope.needToVoteOnQuest = true;				
-			}
+			if (snap.val() === 5) FbGamesService.endGame(gameId, 'evil', user.playerKey);
 		});
 		loyalScoreRef.on('value', snap => {
-			if (snap.val() === 3) FbGamesService.endGame(gameId, 'good');
+			if (snap.val() === 3) FbGamesService.endGame(gameId, 'good', user.playerKey);
 		});
 		evilScoreRef.on('value', snap => {
-			if (snap.val() === 3) FbGamesService.endGame(gameId, 'evil');
+			if (snap.val() === 3) FbGamesService.endGame(gameId, 'evil', user.playerKey);
 		});
 	};
 

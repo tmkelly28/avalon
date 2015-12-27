@@ -115,7 +115,9 @@ app.factory('GameFactory', function () {
 				imageUrl: characters[idx].imageUrl,
 				knownToMerlin: characters[idx].knownToMerlin,
 				knownToEvil: characters[idx].knownToEvil,
-				knownToPercival: characters[idx].knownToPercival
+				knownToPercival: characters[idx].knownToPercival,
+				needToVoteForTeam: true,
+				needToVoteOnQuest: true
 			});
 			idx++;
 		}

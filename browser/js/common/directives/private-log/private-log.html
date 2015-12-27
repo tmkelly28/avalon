@@ -12,7 +12,7 @@
 			<span class="glyphicon glyphicon-eye-open"></span>
 			{{ player.displayName }} is a wizard
 		</span>
-		<span ng-if="(user.loyalty==='evil') && (player.loyalty==='evil') && (player.character !=='Oberon')">
+		<span ng-if="(user.loyalty==='evil') && (player.loyalty==='evil') && (player.character !=='Oberon') && (user._id !== player._id)">
 			<span class="glyphicon glyphicon-eye-open"></span>
 			{{ player.displayName }} is a fellow agent of evil
 		</span>

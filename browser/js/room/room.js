@@ -35,8 +35,6 @@ app.controller('RoomCtrl',
 	$scope.userRecord = userRecord;
 	$scope.players = players;
 	$scope.myTurn = false;
-	$scope.needToVoteForTeam = true;
-	$scope.needToVoteOnQuest = true;
 	$scope.investigatedPlayer = null;
 
 	FbListeners.registerListeners($scope.game, $scope.userRecord, $scope);
@@ -53,22 +51,10 @@ app.controller('RoomCtrl',
 	};
 	$scope.startGame = () => FbGamesService.startGame($scope.game);
 	$scope.me = (player) => player._id === $scope.user._id;
-	$scope.voteApprove = () => {
-		$scope.needToVoteForTeam = false;
-		FbGamesService.approveTeam($scope.game.$id, $scope.userRecord.playerKey);
-	};
-	$scope.voteReject = () => {
-		$scope.needToVoteForTeam = false;
-		FbGamesService.rejectTeam($scope.game.$id, $scope.userRecord.playerKey);
-	};
-	$scope.successQuest = () => {
-		$scope.needToVoteOnQuest = false;
-		FbGamesService.voteToSucceed($scope.game.$id);
-	};
-	$scope.failQuest = () => {
-		$scope.needToVoteOnQuest = false;
-		FbGamesService.voteToFail($scope.game.$id);
-	};
+	$scope.voteApprove = () => FbGamesService.approveTeam($scope.game.$id, $scope.userRecord.playerKey);
+	$scope.voteReject = () => FbGamesService.rejectTeam($scope.game.$id, $scope.userRecord.playerKey);
+	$scope.successQuest = () => FbGamesService.voteToSucceed($scope.game.$id, $scope.userRecord.playerKey);
+	$scope.failQuest = () => FbGamesService.voteToFail($scope.game.$id, $scope.userRecord.playerKey);
 	$scope.addToTeam = (player) => FbGamesService.addToTeam($scope.game.$id, player);
 	$scope.proposeTeam = () => FbGamesService.proposeTeam($scope.game.$id);
 	$scope.resetTeam = () => FbGamesService.resetTeam($scope.game.$id);

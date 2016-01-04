@@ -2,18 +2,6 @@
   box-sizing: border-box;
 }
 
-@media screen and (max-width: 800px) {
-    .mobile-hide {
-      display: none;
-    }
-}
-
-@media screen and (min-width: 801px) {
-    .mobile-appear {
-      display: none;
-    }
-}
-
 body {
   background: #fdfdfd;
   font-family: 'Julius Sans One', sans-serif;
@@ -33,6 +21,7 @@ h1 {
   background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/af/Stone%2C_wall%2C_textura.jpg');
   background-repeat: no-repeat;
   background-position: center;
+  background-attachment: fixed;
   height: 100%;
   position: fixed;
   width: 100%;
@@ -55,7 +44,7 @@ h1 {
 
 #main {
   padding-top: 60px;
-  width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -73,3 +62,18 @@ tr:hover {
 @import 'new-game-modal/main';
 @import 'room/main';
 @import 'user/main';
+
+// mobile screens
+@media screen and (max-width: 800px) {
+
+  .mobile-hide {
+    display: none;
+  }
+}
+
+// only on larger screens
+@media screen and (min-width: 801px) {
+    .mobile-appear {
+      display: none;
+    }
+}

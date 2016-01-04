@@ -15,5 +15,23 @@
 		text-align: center;
 		margin: 0 auto;
 	}
+
+	@media screen and (max-width: 800px) {
+		h1 {
+			font-size: 48px;
+		}
+
+		input {
+			margin: 20px auto;
+		}
+
+		div {
+			padding: 0;
+		}
+
+		button {
+			width: 100%;
+		}
+	}
 }
 

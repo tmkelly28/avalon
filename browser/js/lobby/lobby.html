@@ -17,7 +17,7 @@
     	</thead>
 		<tbody>
             <tr ng-repeat='game in games | filter : { waitingToPlay: true }'>
-    			<th scope="row"><a href="#" ng-click="openJoinGameModal(game)">{{ game.name }}</a></th>
+    			<td scope="row"><a href="#" ng-click="openJoinGameModal(game)">{{ game.name }}</a></td>
     			<td> {{ game.hostName }} </td>
     			<td> {{ numberOfPlayers(game) }} </td>
     			<td> {{ game.targetSize }} </td>

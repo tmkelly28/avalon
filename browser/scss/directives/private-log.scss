@@ -4,6 +4,12 @@
 	right: 0px;
 	width: 50%;
 	height: 10%;
+
+	@media screen and (max-width: 800px) {
+		position: static;
+		display: block;
+		width: 100%;
+	}
 }
 
 .highlighted {

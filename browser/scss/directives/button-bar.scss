@@ -3,4 +3,22 @@
 	bottom: 110px;
 	left: 15px;
 	width: 40%;
+
+	@media screen and (max-width: 800px) {
+		position: static;
+		display: block;
+		width: 100%;
+
+		a {
+			width: 100%;
+			margin: 5px;
+		}
+
+		button {
+			width: 100%;
+			margin: 5px;
+		}
+	}
+
 }
+

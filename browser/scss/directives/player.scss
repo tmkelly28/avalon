@@ -1,70 +1,84 @@
-#playerPicture {
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-	display: block;
-	margin: 0 auto;
-	float: left;
-}
+player {
 
-.voteToken {
-	position: relative;
-	height: 77px;
-	width: 55px;
-	border-radius: 10%;
-	right: 5px;
-	z-index: -1;
-}
-
-.sigil {
-	position: relative;
-	height: 55px;
-	width: 37px;
-	border-radius: 10%;
-	right: 30px;
-	bottom: 20px;
-	z-index: 1;
-	box-shadow: 1px 1px 5px #888888;
-}
-
-img.character {
-	position: relative;
-	border-radius: 10%;
-	right: 5px;
-	height: 77px;
-	width: 55px;
-	z-index: -5;
-}
-
-.selectPlayer {
-		position: relative;
-		bottom: 0;
-		text-align: center;
-		padding: 10px;
-}
-
-@media screen and (max-width: 800px) {
 	#playerPicture {
-		width: 50px;
-		height: 50px;
+		border-radius: 50%;
+		height: 100px;
+		width: 100px;
 	}
 
-	.voteToken {
-		height: 45px;
-		width: 33px;
-		top: -25px;
-		z-index: 0;
+	.game-piece {
+		border-radius: 10%;
+		position: relative;
 	}
 
-	.sigil {
-		height: 33px;
-		width: 25px;
+	.card {
+		height: 77px;
+		width: 55px;
+	}
+
+	.token {
+		height: 55px;
+		width: 37px;
 	}
 
 	img.character {
-		height: 45px;
-		width: 33px;
-		top: -25px;
-		z-index: 0;
+		right: 10px;
+		z-index: -2;
+	}
+
+	.selectPlayer {
+		background-color: rgba(133, 133, 133, 0.6);
+		border: 1px solid #CEE2F3;
+		border-radius: 5px;
+		bottom: 20px;
+		position: relative;
+		padding: 5px;
+		text-align: center;
+	}
+
+	.sigil {
+		bottom: 20px;
+		box-shadow: 1px 1px 5px #888888;
+		right: 40px;
+		z-index: 1;
+	}
+
+	.voteToken {
+		right: 25px;
+		z-index: 2;
+	}
+
+	.lady {
+		border-radius: 50%;
+		display: inline;
+		height:40px;
+		width:40px;
+		z-index: -1;
+	}
+
+	@media screen and (max-width: 800px) {
+		#playerPicture {
+			width: 50px;
+			height: 50px;
+		}
+
+		img.character {
+			height: 45px;
+			width: 33px;
+			top: -25px;
+			z-index: 0;
+		}
+
+		.sigil {
+			height: 33px;
+			width: 25px;
+		}
+
+		.voteToken {
+			height: 45px;
+			width: 33px;
+			top: -25px;
+			z-index: 0;
+		}
 	}
 }

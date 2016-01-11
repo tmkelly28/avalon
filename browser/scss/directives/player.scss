@@ -6,6 +6,11 @@ player {
 		width: 100px;
 	}
 
+	h5 {
+		position: absolute;
+		text-shadow: 1px 1px #000000;
+	}
+
 	.game-piece {
 		border-radius: 10%;
 		position: relative;
@@ -53,7 +58,7 @@ player {
 		display: inline;
 		height:40px;
 		width:40px;
-		z-index: -1;
+		z-index: 2;
 	}
 
 	@media screen and (max-width: 800px) {

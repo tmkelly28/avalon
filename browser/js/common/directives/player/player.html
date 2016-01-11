@@ -1,6 +1,7 @@
 <!-- Player -->
 <h5>
-	{{ player.displayName }}
+	<span>{{ player.displayName }}</span>
+	<!-- Lady -->
 	<img ng-src="/icons/lady_of_the_lake.png"
 		ng-if="game.currentLadyOfTheLake._id === player._id"
 		class="lady game-piece card" />
@@ -22,10 +23,6 @@
 	ng-if="!player.approvedQuest && (game.currentGamePhase === 'quest voting' || game.currentGamePhase === 'team building')"
 	ng-hide="(game.currentQuestIdx === 0 && game.currentVoteTrack === 0) && game.currentGamePhase === 'team building'"
 	class="voteToken game-piece token" />
-<!-- Lady -->
-<!-- <img ng-src="/icons/lady_of_the_lake.png"
-	ng-if="game.currentLadyOfTheLake._id === player._id"
-	class="lady game-piece card" /> -->
 <!-- Sigil -->
 <img ng-src="/icons/sigil.png"
 	ng-if="player.onQuest"

@@ -4,8 +4,9 @@
 
 body {
   background: #fdfdfd;
-  font-family: 'Julius Sans One', sans-serif;
   color: #E7C86C;
+  height: 100vh;
+  font-family: 'Julius Sans One', sans-serif;
 
   a {
     color: #CEE2F3;
@@ -43,9 +44,10 @@ h1 {
 }
 
 #main {
-  padding-top: 60px;
-  width: 100%;
+  height: 100%;
+  // padding-top: 60px;
   margin: 0 auto;
+  width: 100%;
 }
 
 tr:hover {
@@ -54,6 +56,10 @@ tr:hover {
   a {
     color: blue;
   }
+}
+
+section {
+  height: 100%;
 }
 
 @import 'directives/main';

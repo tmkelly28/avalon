@@ -9,6 +9,16 @@ player {
 	h5 {
 		position: absolute;
 		text-shadow: 1px 1px #000000;
+
+		.lady {
+			border-radius: 50%;
+			display: inline;
+			height: 40px;
+			left: 20px;
+			top: -10px;
+			width: 40px;
+			z-index: 2;
+		}
 	}
 
 	.game-piece {
@@ -53,13 +63,6 @@ player {
 		z-index: 2;
 	}
 
-	.lady {
-		border-radius: 50%;
-		display: inline;
-		height:40px;
-		width:40px;
-		z-index: 2;
-	}
 
 	@media screen and (max-width: 800px) {
 		#playerPicture {

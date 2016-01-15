@@ -1,0 +1,15 @@
+<div id="dashboard">
+	<button class="btn" ng-click="toggle('quests')">
+		<span class="glyphicon glyphicon-tower"></span> Quests
+	</button>
+	<button class="btn" ng-click="toggle('info')">
+		<span class="glyphicon glyphicon-info-sign"></span> Game Info
+	</button>
+	<button class="btn" ng-click="toggle('chat')">
+		<span class="glyphicon glyphicon-user"></span> Chat
+	</button>
+
+	<quest-log ng-if="display === 'quests'"></quest-log>
+	<private-log ng-if="display === 'info'"></private-log>
+	<chat-history ng-if="display === 'chat'"></chat-history>
+</div>

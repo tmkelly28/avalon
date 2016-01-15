@@ -1,19 +1,13 @@
 #questLog {
-	position: fixed;
-	right: 0;
-	bottom: 30px;
-	width: 50%;
-	height: 50%;
 
 	div {
 		display: inline-block;
 	}
 
-	@media screen and (max-width: 800px) {
-		position: static;
-		display: block;
-		width: 100%;
-	}
+    #voteTrack {
+        margin: 1em;
+    }
+
 }
 
 .quest {
@@ -34,9 +28,8 @@
 .questInfo {
 	color: #E7C86C;
 	font-size: 12px;
-	position: absolute;
 	text-align: center;
-	top: 85px;
+	top: 12em;
 
 	@media screen and (max-width: 800px) {
 		position: static;

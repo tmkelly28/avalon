@@ -1,7 +1,7 @@
 'use strict';
 
 app.config(function ($stateProvider) {
-	
+
 	$stateProvider.state('room', {
 		url: '/room/:key',
 		templateUrl: 'js/room/room.html',
@@ -24,7 +24,7 @@ app.config(function ($stateProvider) {
 	});
 });
 
-app.controller('RoomCtrl', 
+app.controller('RoomCtrl',
 	function ($scope, game, chats, user, players, userRecord, Session, FbChatService, FbGamesService, FbListeners) {
 
 	const author = Session.user.displayName;
@@ -36,9 +36,11 @@ app.controller('RoomCtrl',
 	$scope.players = players;
 	$scope.myTurn = false;
 	$scope.investigatedPlayer = null;
+    $scope.display = 'chat';
 
 	FbListeners.registerListeners($scope.game, $scope.userRecord, $scope);
 
+    $scope.toggle = (state) => $scope.display = state;
 	$scope.addMessage = () => {
 		if (!$scope.newMessage.text) return;
 		FbChatService.addChat($scope.chats, author, $scope.newMessage.text);

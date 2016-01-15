@@ -1,15 +1,9 @@
 #privateLog {
-	position: fixed;
-	bottom: 220px;
-	right: 0px;
-	width: 50%;
-	height: 10%;
+    margin: 3em;
 
-	@media screen and (max-width: 800px) {
-		position: static;
-		display: block;
-		width: 100%;
-	}
+    span {
+        margin: 0.5em;
+    }
 }
 
 .highlighted {
